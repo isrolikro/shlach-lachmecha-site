@@ -1,1 +1,41 @@
-/* You can add global styles to this file, and also import other style files */
+/* src/styles.scss */
+
+// 1. הגדרת פלטת הצבעים מתוך הלוגו
+:root {
+    // הכחול-עמוק מהרקע
+    --primary-color: #1a4b5e;  
+    
+    // הזהב-קרם מהאיור והטקסט
+    --accent-color: #e8d3b0;   
+    
+    // צבע רקע עדין לעמודים (לא לבן "בוהק")
+    --page-bg: #fdfaf5;      
+    
+    // צבע טקסט ראשי
+    --text-dark: #2c3e50;
+    
+    --white: #ffffff;
+  }
+  
+  // 2. הגדרות בסיסיות לגוף האתר
+  body {
+    margin: 0;
+    // הגדרת הפונטים עם העדפה ל-Assistant
+    font-family: 'Assistant', 'Heebo', sans-serif; 
+    background-color: var(--page-bg);
+    color: var(--text-dark);
+    
+    // הכנה לכך שהאתר הוא בעברית
+    direction: rtl; 
+    -webkit-font-smoothing: antialiased;
+  }
+  
+  // 3. כמה מחלקות עזר בסיסיות (Helper Classes)
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+  
+  .text-gold { color: var(--accent-color); }
+  .bg-primary { background-color: var(--primary-color); }

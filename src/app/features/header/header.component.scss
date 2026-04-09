@@ -1,0 +1,145 @@
+.main-header {
+  --teal-color: #1a4b5e;
+  --gold-color: #d4af37;
+  --white: #ffffff;
+  font-family: 'Assistant', sans-serif;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.top-bar {
+  background-color: var(--teal-color);
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  direction: rtl !important; // שומר על המיקום קבוע בימין
+
+  .lang-switcher {
+    display: flex;
+    gap: 10px;
+    font-size: 14px;
+    color: var(--white);
+    cursor: pointer;
+
+    span:not(.divider):hover { color: var(--gold-color); }
+    .active { color: var(--gold-color); font-weight: bold; }
+  }
+}
+
+.header-banner {
+  background: linear-gradient(135deg, #163e4f 0%, #205c75 100%);
+  color: var(--white);
+  padding: 40px 0;
+  border-bottom: 4px solid var(--gold-color);
+
+  .banner-grid {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr; // מבטיח שהאמצע יהיה מרכז המסך
+    align-items: center;
+    gap: 20px;
+  }
+}
+
+.titles-section {
+  text-align: center;
+  
+  .main-title {
+    color: var(--gold-color);
+    font-size: clamp(35px, 6vw, 60px);
+    margin: 0;
+    font-weight: 800;
+    line-height: 1.1;
+  }
+
+  .sub-title {
+    font-size: 22px;
+    margin: 8px 0;
+    opacity: 0.9;
+  }
+
+  .decorator {
+    width: 80px;
+    height: 2px;
+    background: var(--gold-color);
+    margin: 12px auto;
+    opacity: 0.7;
+  }
+
+  .extra-title {
+    font-size: 18px;
+    font-style: italic;
+    opacity: 0.8;
+  }
+}
+
+.search-area {
+  display: flex;
+  justify-content: flex-end;
+
+  .input-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 280px;
+
+    input {
+      width: 100%;
+      padding: 10px 45px 10px 15px; // ריווח ברירת מחדל (RTL)
+      border-radius: 20px;
+      border: 1px solid rgba(212, 175, 55, 0.5);
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      outline: none;
+      transition: 0.3s;
+
+      // תיקון ריווח לרוסית (LTR)
+      [dir="ltr"] & {
+        padding: 10px 15px 10px 45px;
+      }
+
+      &:focus {
+        background: rgba(255, 255, 255, 0.2);
+        border-color: var(--gold-color);
+      }
+    }
+
+    .search-icon {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      opacity: 0.7;
+
+      [dir="rtl"] & { right: 15px; }
+      [dir="ltr"] & { left: 15px; }
+    }
+  }
+}
+
+.logo-area .logo {
+  height: 90px;
+  width: auto;
+}
+
+// התאמה למובייל
+@media (max-width: 768px) {
+  .header-banner .banner-grid {
+    grid-template-columns: 1fr; // עמודה אחת בלבד
+    text-align: center;
+  }
+
+  .logo-area {
+    display: none; // הסתרת הלוגו כפי שביקשת
+  }
+
+  .search-area {
+    justify-content: center;
+    .input-wrapper { max-width: 100%; }
+  }
+
+  .titles-section {
+    order: -1; // הכותרות יופיעו בראש
+    .main-title { font-size: 30px; }
+  }
+}

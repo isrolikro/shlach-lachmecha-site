@@ -1,0 +1,112 @@
+.archive-layout {
+  display: flex;
+  min-height: 80vh;
+  background: #fdfdfd;
+  // הכיוון נקבע אוטומטית לפי מה שהגדרנו ב-Service על ה-body
+}
+
+.sidebar {
+  width: 280px;
+  flex-shrink: 0;
+  background: white;
+  border-inline-end: 1px solid #eee; // קו הפרדה עדין
+  padding-top: 20px;
+
+  .sidebar-header {
+    padding: 15px 25px;
+    font-weight: 800;
+    color: #1a4a5e;
+    font-size: 1.1rem;
+    border-bottom: 2px solid #f9f9f9;
+    margin-bottom: 10px;
+  }
+
+  .menu-group {
+    margin-bottom: 20px;
+
+    .group-label {
+      padding: 15px 25px 5px;
+      font-size: 0.75rem;
+      color: #b0b0b0;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+    }
+
+    .group-items {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+
+      li {
+        padding: 12px 25px;
+        cursor: pointer;
+        font-size: 1rem;
+        color: #444;
+        transition: all 0.2s ease;
+
+        &:hover { background: #f8f8f8; color: #1a4a5e; }
+
+        &.active {
+          background: #f0f5f7;
+          color: #1a4a5e;
+          font-weight: 700;
+          border-inline-start: 4px solid #d4af37; // פס זהב בבחירה
+        }
+      }
+    }
+  }
+}
+
+.main-content {
+  flex-grow: 1;
+  padding: 40px;
+
+  .content-header {
+    margin-bottom: 30px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+
+    h2 { margin: 0; font-size: 2.2rem; color: #1a4a5e; }
+    .results-count { color: #888; font-size: 0.9rem; }
+  }
+}
+
+.lessons-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 30px;
+}
+
+// התאמה למובייל - הסיידבר הופך לסרגל עליון נגלל
+@media (max-width: 768px) {
+  .archive-layout {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    border-inline-end: none;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+
+    .group-label { display: none; } // מסתירים כותרות קבוצות במובייל לחיסכון במקום
+    
+    .group-items {
+      display: flex;
+      overflow-x: auto;
+      padding: 0 15px;
+      li {
+        white-space: nowrap;
+        padding: 8px 15px;
+        margin-bottom: 5px;
+        border-bottom: none !important;
+        &.active { border-inline-start: none; border-bottom: 3px solid #d4af37 !important; }
+      }
+    }
+  }
+}
+
+// ... (שאר עיצובי ה-lesson-card שלך נשארים אותו דבר)

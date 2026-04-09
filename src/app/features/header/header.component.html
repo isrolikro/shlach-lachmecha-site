@@ -1,0 +1,36 @@
+<header class="main-header" [dir]="t.dir">
+  
+  <div class="top-bar" dir="rtl">
+    <div class="container">
+      <div class="lang-switcher">
+        <span (click)="switchLang('he')" [class.active]="currentLang === 'he'">HE</span>
+        <span class="divider">|</span>
+        <span (click)="switchLang('ru')" [class.active]="currentLang === 'ru'">RU</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="header-banner">
+    <div class="container banner-grid">
+      
+      <div class="side-section logo-area">
+        <img src="logo.png" alt="Logo" class="logo">
+      </div>
+
+      <div class="center-section titles-section">
+        <h1 class="main-title">{{ t.title }}</h1>
+        <p class="sub-title">{{ t.subTitle }}</p>
+        <div class="decorator"></div>
+        <p class="extra-title">{{ t.extraTitle }}</p>
+      </div>
+
+      <div class="side-section search-area">
+        <div class="input-wrapper">
+          <input type="text" [placeholder]="t.searchPlaceholder" (input)="onSearch($event)">
+          <span class="search-icon">🔍</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</header>

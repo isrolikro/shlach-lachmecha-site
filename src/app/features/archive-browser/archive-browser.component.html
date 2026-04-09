@@ -1,0 +1,61 @@
+<div class="archive-layout">
+  
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      {{ ui[currentLang].menuTitle }}
+    </div>
+    
+    <nav class="sidebar-nav">
+      @for (group of menuGroups; track group.id) {
+        <div class="menu-group">
+          <div class="group-label">{{ group.label[currentLang] }}</div>
+          <ul class="group-items">
+            @for (item of group.items; track item.id) {
+              <li 
+                [class.active]="selectedCategory === item.id"
+                (click)="selectCategory(item.id)">
+                {{ item.label[currentLang] }}
+              </li>
+            }
+          </ul>
+        </div>
+      }
+    </nav>
+  </aside>
+
+  <main class="main-content">
+    <header class="content-header">
+      <h2>{{ selectedCategory }}</h2>
+      <div class="results-count">
+        {{ filteredLessons.length }} {{ ui[currentLang].found }}
+      </div>
+    </header>
+
+    @if (filteredLessons.length > 0) {
+      <div class="lessons-grid">
+        @for (lesson of filteredLessons; track lesson.id) {
+          <div class="lesson-card">
+            <div class="lesson-preview">
+              @if (previews[lesson.id]) {
+                <img [src]="previews[lesson.id]" alt="Preview">
+              } @else {
+                <div class="preview-loader"><div class="spinner"></div></div>
+              }
+            </div>
+            <div class="lesson-details">
+              <span class="lesson-title">{{ lesson.title }}</span>
+              <div class="lesson-actions">
+                <a [href]="lesson.pdfUrl" target="_blank">{{ currentLang === 'he' ? 'צפייה' : 'Смотреть' }}</a>
+                <a [href]="lesson.pdfUrl" download class="download-btn">📥</a>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    } @else {
+      <div class="empty-state">
+        <p>{{ ui[currentLang].empty }}</p>
+      </div>
+    }
+  </main>
+</div>
