@@ -1,5 +1,4 @@
 <div class="archive-layout">
-  
   <aside class="sidebar">
     <div class="sidebar-header">
       {{ ui[currentLang].menuTitle }}
@@ -36,24 +35,10 @@
     @if (filteredLessons.length > 0) {
       <div class="lessons-grid">
         @for (lesson of filteredLessons; track lesson.id) {
-          <div class="lesson-card">
-            <div class="lesson-preview">
-              @if (previews[lesson.id]) {
-                <img [src]="previews[lesson.id]" alt="Preview" (click)="openPreview(lesson.pdfUrl)">
-              } @else {
-                <div class="preview-loader"><div class="spinner"></div></div>
-              }
-            </div>
-            <div class="lesson-details">
-              <span class="lesson-title">{{ lesson.title }}</span>
-              <div class="lesson-actions">
-                <a [href]="lesson.pdfUrl" target="_blank" class="view-btn">
-                  {{ currentLang === 'he' ? 'צפייה' : 'Смотреть' }}
-                </a>
-                <a [href]="lesson.pdfUrl" download class="download-btn" title="Download">📥</a>
-              </div>
-            </div>
-          </div>
+          <app-lesson-card 
+            [lesson]="lesson" 
+            [currentLang]="currentLang">
+          </app-lesson-card>
         }
       </div>
     } @else {

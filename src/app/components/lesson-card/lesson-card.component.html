@@ -1,0 +1,21 @@
+<div class="lesson-card">
+  <div class="card-header">
+    <h3 class="lesson-title">{{ displayTitle }}</h3>
+  </div>
+
+  <div class="card-footer">
+    <a [href]="getDriveViewUrl(lesson.pdfUrl)" 
+       target="_blank" 
+       class="nav-link view">
+      {{ currentLang === 'he' ? 'צפייה בקובץ' : 'Просмотр' }}
+    </a>
+
+    <div class="vertical-divider"></div>
+
+    <a [href]="getDirectDownloadUrl(lesson.pdfUrl)" 
+       download 
+       class="nav-link download">
+      {{ currentLang === 'he' ? 'הורדה' : 'Скачать' }}
+    </a>
+  </div>
+</div>
