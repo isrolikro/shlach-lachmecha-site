@@ -31,25 +31,36 @@ export class HeaderComponent {
   };
 
   currentLang = 'he';
-  t = this.translations['he']; // האובייקט שמוצג בפועל
+  t = this.translations['he'];
+  
+  // משתנה חדש לניהול מצב החיפוש במובייל
+  isSearchOpen = false; 
 
   constructor(private langService: LanguageService) {
-    // האזנה לשירות כדי שה-Header יתעדכן כשמשנים שפה מכל מקום באתר
     this.langService.currentLang$.subscribe(lang => {
       this.currentLang = lang;
       this.t = this.translations[lang];
     });
   }
 
-  // פונקציה 1: החלפת שפה
+  // פונקציה להחלפת שפה
   switchLang(lang: 'he' | 'ru') {
     this.langService.setLanguage(lang);
-  } // <--- כאן נסגרת הפונקציה switchLang
+  }
 
-  // פונקציה 2: חיפוש (עכשיו היא מחוץ ל-switchLang ועומדת בפני עצמה)
+  // פונקציה חדשה: פותחת וסוגרת את מצב החיפוש
+  toggleSearch() {
+    this.isSearchOpen = !this.isSearchOpen;
+    
+    // אופציונלי: אם סוגרים את החיפוש, מאפסים את התוצאות
+    if (!this.isSearchOpen) {
+      this.searchChanged.emit('');
+    }
+  }
+
   onSearch(event: any) {
     const term = event.target.value;
     this.searchChanged.emit(term);
   }
 
-} 
+}

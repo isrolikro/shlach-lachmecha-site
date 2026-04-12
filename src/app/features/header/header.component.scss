@@ -3,6 +3,9 @@
   --gold-color: #d4af37;
   --white: #ffffff;
   font-family: 'Assistant', sans-serif;
+  
+  // מבטיח שכל האלמנטים יחשבו פדינג בתוך הרוחב
+  * { box-sizing: border-box; }
 }
 
 .container {
@@ -11,11 +14,12 @@
   padding: 0 20px;
 }
 
+/* --- Top Bar (Language Switcher) --- */
 .top-bar {
   background-color: var(--teal-color);
   padding: 8px 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  direction: rtl !important; // שומר על המיקום קבוע בימין
+  direction: rtl !important;
 
   .lang-switcher {
     display: flex;
@@ -29,15 +33,17 @@
   }
 }
 
+/* --- Banner & Titles --- */
 .header-banner {
   background: linear-gradient(135deg, #163e4f 0%, #205c75 100%);
   color: var(--white);
   padding: 40px 0;
   border-bottom: 4px solid var(--gold-color);
+  position: relative;
 
   .banner-grid {
     display: grid;
-    grid-template-columns: 1fr 2fr 1fr; // מבטיח שהאמצע יהיה מרכז המסך
+    grid-template-columns: 1fr 2fr 1fr;
     align-items: center;
     gap: 20px;
   }
@@ -48,33 +54,22 @@
   
   .main-title {
     color: var(--gold-color);
-    font-size: clamp(35px, 6vw, 60px);
+    font-size: clamp(30px, 5vw, 60px);
     margin: 0;
     font-weight: 800;
     line-height: 1.1;
   }
-
-  .sub-title {
-    font-size: 22px;
-    margin: 8px 0;
-    opacity: 0.9;
-  }
-
-  .decorator {
-    width: 80px;
-    height: 2px;
-    background: var(--gold-color);
-    margin: 12px auto;
-    opacity: 0.7;
-  }
-
-  .extra-title {
-    font-size: 18px;
-    font-style: italic;
-    opacity: 0.8;
-  }
+  .sub-title { font-size: 20px; margin: 8px 0; opacity: 0.9; }
+  .decorator { width: 80px; height: 2px; background: var(--gold-color); margin: 12px auto; opacity: 0.7; }
+  .extra-title { font-size: 17px; font-style: italic; opacity: 0.8; }
 }
 
+.logo-area .logo {
+  height: 90px;
+  width: auto;
+}
+
+/* --- לוגיקת החיפוש (Desktop & Mobile) --- */
 .search-area {
   display: flex;
   justify-content: flex-end;
@@ -83,25 +78,32 @@
     position: relative;
     width: 100%;
     max-width: 280px;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 
     input {
       width: 100%;
-      padding: 10px 45px 10px 15px; // ריווח ברירת מחדל (RTL)
+      height: 40px;
       border-radius: 20px;
       border: 1px solid rgba(212, 175, 55, 0.5);
       background: rgba(255, 255, 255, 0.1);
       color: white;
       outline: none;
+      font-size: 15px;
       transition: 0.3s;
-
-      // תיקון ריווח לרוסית (LTR)
-      [dir="ltr"] & {
-        padding: 10px 15px 10px 45px;
-      }
 
       &:focus {
         background: rgba(255, 255, 255, 0.2);
         border-color: var(--gold-color);
+      }
+
+      // הגדרות כיוון וריווח לפי שפה (מונע כפילות ובלגן)
+      [dir="rtl"] & {
+        padding: 0 45px 0 15px;
+        text-align: right;
+      }
+      [dir="ltr"] & {
+        padding: 0 15px 0 45px;
+        text-align: left;
       }
     }
 
@@ -109,37 +111,79 @@
       position: absolute;
       top: 50%;
       transform: translateY(-50%);
-      opacity: 0.7;
+      cursor: pointer;
+      font-size: 1.2rem;
+      z-index: 5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
 
-      [dir="rtl"] & { right: 15px; }
-      [dir="ltr"] & { left: 15px; }
+      // הצמדת האייקון לצד הנכון
+      [dir="rtl"] & { right: 15px; left: auto; }
+      [dir="ltr"] & { left: 15px; right: auto; }
     }
   }
 }
 
-.logo-area .logo {
-  height: 90px;
-  width: auto;
-}
-
-// התאמה למובייל
+/* --- התאמה למובייל (רספונסיביות) --- */
 @media (max-width: 768px) {
-  .header-banner .banner-grid {
-    grid-template-columns: 1fr; // עמודה אחת בלבד
-    text-align: center;
+  .header-banner {
+    padding: 25px 0;
+    
+    .banner-grid {
+      grid-template-columns: 1fr; // הכל בעמודה אחת
+      text-align: center;
+    }
   }
 
-  .logo-area {
-    display: none; // הסתרת הלוגו כפי שביקשת
-  }
+  .logo-area { display: none; }
 
   .search-area {
-    justify-content: center;
-    .input-wrapper { max-width: 100%; }
+    position: absolute;
+    top: 15px;
+    z-index: 100;
+    
+    // מיקום האייקון הסגור בפינה לפי השפה
+    // [dir="rtl"] & { left: 20px; right: auto; }
+    // [dir="ltr"] & { right: 20px; left: auto; }
+
+    .input-wrapper {
+      max-width: 40px; // מצב סגור - רק האייקון
+      background: rgba(22, 62, 79, 0.5);
+      border-radius: 20px;
+      overflow: hidden;
+
+      input {
+        opacity: 0;
+        cursor: pointer;
+      }
+    }
+
+    // מצב פתוח במובייל
+    &.mobile-open {
+      width: calc(100% - 40px);
+      [dir="rtl"] & { right: 20px; left: 20px; }
+      [dir="ltr"] & { left: 20px; right: 20px; }
+
+      .input-wrapper {
+        max-width: 100%;
+        background: rgba(16, 46, 58, 0.98);
+        border: 1px solid var(--gold-color);
+        box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+
+        input {
+          opacity: 1;
+          cursor: text;
+        }
+      }
+    }
   }
 
   .titles-section {
-    order: -1; // הכותרות יופיעו בראש
-    .main-title { font-size: 30px; }
+    order: -1;
+    padding: 0 10px;
+    .main-title { font-size: 28px; }
+    .sub-title { font-size: 18px; }
   }
 }
+

@@ -24,10 +24,15 @@
         <p class="extra-title">{{ t.extraTitle }}</p>
       </div>
 
-      <div class="side-section search-area">
+      <div class="side-section search-area" [class.mobile-open]="isSearchOpen">
         <div class="input-wrapper">
-          <input type="text" [placeholder]="t.searchPlaceholder" (input)="onSearch($event)">
-          <span class="search-icon">🔍</span>
+          <input 
+          type="text" 
+          [placeholder]="t.searchPlaceholder" 
+          (input)="onSearch($event)"
+          #searchInput
+          >
+          <span class="search-icon" (click)="toggleSearch()">🔍</span>
         </div>
       </div>
 
