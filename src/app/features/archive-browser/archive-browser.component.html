@@ -25,7 +25,9 @@
 
   <main class="main-content">
     <header class="content-header">
-      <h2>{{ selectedCategory }}</h2>
+      <h2>
+        {{ searchTerm ? ui[currentLang].searchResults : getCategoryLabel(selectedCategory) }}
+      </h2>
       <div class="results-count">
         {{ filteredLessons.length }} {{ ui[currentLang].found }}
       </div>
@@ -37,7 +39,7 @@
           <div class="lesson-card">
             <div class="lesson-preview">
               @if (previews[lesson.id]) {
-                <img [src]="previews[lesson.id]" alt="Preview">
+                <img [src]="previews[lesson.id]" alt="Preview" (click)="openPreview(lesson.pdfUrl)">
               } @else {
                 <div class="preview-loader"><div class="spinner"></div></div>
               }
@@ -45,8 +47,10 @@
             <div class="lesson-details">
               <span class="lesson-title">{{ lesson.title }}</span>
               <div class="lesson-actions">
-                <a [href]="lesson.pdfUrl" target="_blank">{{ currentLang === 'he' ? 'צפייה' : 'Смотреть' }}</a>
-                <a [href]="lesson.pdfUrl" download class="download-btn">📥</a>
+                <a [href]="lesson.pdfUrl" target="_blank" class="view-btn">
+                  {{ currentLang === 'he' ? 'צפייה' : 'Смотреть' }}
+                </a>
+                <a [href]="lesson.pdfUrl" download class="download-btn" title="Download">📥</a>
               </div>
             </div>
           </div>
