@@ -1,5 +1,5 @@
-<div class="archive-layout">
-  <aside class="sidebar">
+<div class="archive-layout" [attr.dir]="currentLang === 'he' ? 'rtl' : 'ltr'">
+  <aside class="sidebar" role="navigation">
     <div class="sidebar-header">
       {{ ui[currentLang].menuTitle }}
     </div>
@@ -12,7 +12,9 @@
             @for (item of group.items; track item.id) {
               <li 
                 [class.active]="selectedCategory === item.id"
-                (click)="selectCategory(item.id)">
+                (click)="selectCategory(item.id)"
+                role="button"
+                tabindex="0">
                 {{ item.label[currentLang] }}
               </li>
             }
@@ -24,11 +26,13 @@
 
   <main class="main-content">
     <header class="content-header">
-      <h2>
-        {{ searchTerm ? ui[currentLang].searchResults : getCategoryLabel(selectedCategory) }}
-      </h2>
-      <div class="results-count">
-        {{ filteredLessons.length }} {{ ui[currentLang].found }}
+      <div class="header-titles">
+        <h2>
+          {{ searchTerm ? ui[currentLang].searchResults : getCategoryLabel(selectedCategory) }}
+        </h2>
+        <div class="results-count">
+          {{ filteredLessons.length }} {{ ui[currentLang].found }}
+        </div>
       </div>
     </header>
 
@@ -43,6 +47,7 @@
       </div>
     } @else {
       <div class="empty-state">
+        <div class="empty-icon">🔍</div>
         <p>{{ ui[currentLang].empty }}</p>
       </div>
     }

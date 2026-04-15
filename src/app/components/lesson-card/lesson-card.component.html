@@ -1,20 +1,36 @@
-<div class="lesson-card">
+<div class="lesson-card" [attr.lang]="currentLang">
   <div class="card-header">
     <h3 class="lesson-title">{{ displayTitle }}</h3>
+    
+    <div class="card-body" *ngIf="displayContent">
+      <p class="toc-content" [class.expanded]="isExpanded">
+        {{ displayContent }}
+      </p>
+
+      <button 
+        *ngIf="displayContent.length > 150" 
+        (click)="toggleExpand()" 
+        class="toggle-expand-btn">
+        {{ isExpanded ? (currentLang === 'he' ? 'סגור' : 'Скрыть') : (currentLang === 'he' ? 'קרא עוד...' : 'Читать далее...') }}
+        <span class="arrow" [class.rotated]="isExpanded">▼</span>
+      </button>
+    </div>
   </div>
 
   <div class="card-footer">
-    <a [href]="getDriveViewUrl(lesson.pdfUrl)" 
-       target="_blank" 
-       class="nav-link view">
+    <a 
+      [href]="getDriveViewUrl(lesson.pdfUrl)" 
+      target="_blank" 
+      class="nav-link view">
       {{ currentLang === 'he' ? 'צפייה בקובץ' : 'Просмотр' }}
     </a>
-
+    
     <div class="vertical-divider"></div>
-
-    <a [href]="getDirectDownloadUrl(lesson.pdfUrl)" 
-       download 
-       class="nav-link download">
+    
+    <a 
+      [href]="getDirectDownloadUrl(lesson.pdfUrl)" 
+      download 
+      class="nav-link download">
       {{ currentLang === 'he' ? 'הורדה' : 'Скачать' }}
     </a>
   </div>

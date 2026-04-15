@@ -6,11 +6,13 @@ import { Lesson } from '../../models/lesson.model';
 import { Subscription } from 'rxjs';
 import { LessonCardComponent } from '../../components/lesson-card/lesson-card.component';
 
+// יצירת רשימה שטוחה אחת למיון - מחוץ למחלקה כדי למנוע שגיאות const
+const GLOBAL_ORDER = Object.values(DriveDataService.CATEGORIES_CONFIG).flat();
 
 @Component({
   selector: 'app-archive-browser',
   standalone: true,
-  imports: [CommonModule, LessonCardComponent], // הוספנו את LessonCardComponent כאן
+  imports: [CommonModule, LessonCardComponent],
   templateUrl: './archive-browser.component.html',
   styleUrl: './archive-browser.component.scss'
 })
@@ -23,7 +25,6 @@ export class ArchiveBrowserComponent implements OnInit, OnDestroy {
   currentLang: 'he' | 'ru' = 'he';
   private langSub!: Subscription;
 
-  // תרגומי ממשק
   ui: any = {
     he: { 
       menuTitle: 'תפריט שיעורים', 
@@ -39,7 +40,6 @@ export class ArchiveBrowserComponent implements OnInit, OnDestroy {
     }
   };
 
-  // מבנה התפריט
   menuGroups = [
     {
       id: 'humash',
@@ -74,14 +74,11 @@ export class ArchiveBrowserComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    // האזנה לשינויי שפה
     this.langSub = this.langService.currentLang$.subscribe(lang => {
       this.currentLang = lang;
-      // אם לא נבחרה קטגוריה, נברירת המחדל היא בראשית
       if (!this.selectedCategory) this.selectCategory('בראשית');
     });
 
-    // טעינת הנתונים מהשירות
     this.driveService.getLessons().subscribe({
       next: (lessons) => {
         this.allLessons = lessons;
@@ -91,7 +88,6 @@ export class ArchiveBrowserComponent implements OnInit, OnDestroy {
     });
   }
 
-  // מחזיר את הלייבל המתורגם של הקטגוריה הנוכחית
   getCategoryLabel(id: string | null): string {
     if (!id) return '';
     for (const group of this.menuGroups) {
@@ -106,24 +102,39 @@ export class ArchiveBrowserComponent implements OnInit, OnDestroy {
     this.filterLessons();
   }
 
-  // לוגיקת הסינון המרכזית
   filterLessons(): void {
-    this.filteredLessons = this.allLessons.filter(lesson => {
+    // 1. שלב הסינון
+    let results = this.allLessons.filter(lesson => {
       const term = this.searchTerm ? this.searchTerm.toLowerCase().trim() : '';
-      const matchesSearch = lesson.title.toLowerCase().includes(term);
+      const name = (lesson.title || '').toLowerCase();
+      const desc = (lesson.description || '').toLowerCase();
+      const matchesSearch = name.includes(term) || desc.includes(term);
 
-      // אם המשתמש מחפש - החיפוש הוא גלובלי (מתעלם מקטגוריה)
       if (term !== '') {
         return matchesSearch;
       }
 
-      // אם אין חיפוש - מסננים לפי הקטגוריה שנבחרה בתפריט
       return !this.selectedCategory || lesson.humash === this.selectedCategory;
+    });
+
+    // 2. שלב המיון לפי סדר הפרשיות (GLOBAL_ORDER)
+    this.filteredLessons = results.sort((a, b) => {
+      const indexA = GLOBAL_ORDER.indexOf(a.parasha);
+      const indexB = GLOBAL_ORDER.indexOf(b.parasha);
+
+      const posA = indexA === -1 ? 999 : indexA;
+      const posB = indexB === -1 ? 999 : indexB;
+
+      // אם מדובר באותה פרשה, מציגים את השנה המאוחרת יותר למעלה
+      if (posA === posB) {
+        return (b.year || '').localeCompare(a.year || '');
+      }
+
+      return posA - posB;
     });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    // עדכון הסינון בכל פעם שמילת החיפוש משתנה ב-Header
     if (changes['searchTerm']) {
       this.filterLessons();
     }
