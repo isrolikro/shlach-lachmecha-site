@@ -13,17 +13,17 @@ export class HeaderComponent {
   @Output() searchChanged = new EventEmitter<string>();
 
   // מילון התרגומים והגדרות הכיוון
-  translations: any = {
+translations: any = {
     he: {
       title: 'שלח לחמך',
-      subTitle: 'שיעורי הגר"ב לאזאר שליט"א',
+      subTitle: 'שיעורי מורנו הרב הראשי לרוסיא <br /> רבי <b>בערל לאזאר</b> שליט"א',
       extraTitle: 'על סדר הפרשיות והמועדים',
       searchPlaceholder: 'חפש פרשה, חג או נושא...',
       dir: 'rtl'
     },
     ru: {
       title: 'Шлах Лахмеха',
-      subTitle: 'Уроки Главного Раввина Берла Лазара',
+      subTitle: 'Уроки Главного Раввина <br /> <b>Берла Лазара</b>',
       extraTitle: 'По недельным главам и праздникам',
       searchPlaceholder: 'Поиск темы, праздника...',
       dir: 'ltr'

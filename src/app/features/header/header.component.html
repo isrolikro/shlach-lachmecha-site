@@ -19,7 +19,7 @@
 
       <div class="center-section titles-section">
         <h1 class="main-title">{{ t.title }}</h1>
-        <p class="sub-title">{{ t.subTitle }}</p>
+        <p class="sub-title" [innerHTML]="t.subTitle"></p>
         <div class="decorator"></div>
         <p class="extra-title">{{ t.extraTitle }}</p>
       </div>
