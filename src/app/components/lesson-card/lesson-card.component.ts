@@ -1,6 +1,5 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Lesson } from '../../models/lesson.model';
 
 @Component({
   selector: 'app-lesson-card',
@@ -13,42 +12,63 @@ export class LessonCardComponent {
   @Input() lesson!: any; 
   @Input() currentLang: 'he' | 'ru' = 'he';
 
-  // משתנה לניהול מצב פתיחת התקציר
   isExpanded = false;
 
-  // מנגנון בחירת כותרת חכם עם פולבק דו-כיווני
+  // --- מנגנון פיצול שם הקובץ (הכותרת) ---
   get displayTitle(): string {
-    if (this.currentLang === 'ru') {
-      return this.lesson.titleRu || this.lesson.title || 'Без заголовка';
-    } else {
-      return this.lesson.title || this.lesson.titleRu || 'ללא כותרת';
+    const fullTitle = this.lesson?.title || '';
+    
+    // אם מצאנו את המפריד |, אנחנו מפצלים לפי שפה
+    if (fullTitle.includes('|')) {
+      const parts = fullTitle.split('|');
+      if (this.currentLang === 'ru' && parts.length > 1) {
+        return parts[1].trim();
+      }
+      return parts[0].trim();
     }
+    
+    // פולבק: אם אין | (כמו בנח), מציגים את הכותרת כפי שהגיעה מהסרוויס
+    return fullTitle || (this.currentLang === 'ru' ? 'Без заголовка' : 'ללא כותרת');
   }
 
-  // שליפת התיאור שהגיע מגוגל דרייב
+  // --- מנגנון פיצול תיאור השיעור (התקציר) ---
   get displayContent(): string {
-    return this.lesson?.description || '';
+    const fullText = this.lesson?.description || '';
+    
+    // אם אין טקסט (כמו בשאר הקבצים), מחזירים ריק וה-HTML יסתיר את האזור
+    if (!fullText) return '';
+
+    // אם מצאנו את המפריד ---, נבצע פיצול
+    if (fullText.includes('---')) {
+      const parts = fullText.split('---');
+      if (this.currentLang === 'ru' && parts.length > 1) {
+        return parts[1].trim();
+      }
+      return parts[0].trim();
+    }
+    
+    // אם יש טקסט אבל בלי מפריד (תמיכה לאחור), נציג את כולו
+    return fullText;
   }
 
-  // שינוי מצב התצוגה (פתוח/סגור)
   toggleExpand(): void {
     this.isExpanded = !this.isExpanded;
   }
 
   getDriveViewUrl(url: string): string {
-    // משתמש ב-pdfUrl או בקישור הישיר שמגיע מה-API
-    const fileId = this.extractId(url || this.lesson?.pdfUrl);
+    // עדיפות ל-pdfUrl, ואם חסר משתמשים ב-id הישיר (ראינו ב-Network שזה קיים)
+    const fileId = this.extractId(url || this.lesson?.pdfUrl || this.lesson?.id);
     return `https://drive.google.com/file/d/${fileId}/view?usp=sharing`;
   }
 
   getDirectDownloadUrl(url: string): string {
-    const fileId = this.extractId(url || this.lesson?.pdfUrl);
+    const fileId = this.extractId(url || this.lesson?.pdfUrl || this.lesson?.id);
     return `https://docs.google.com/uc?export=download&id=${fileId}`;
   }
 
   private extractId(url: string): string {
     if (!url) return '';
-    // תמיכה רחבה יותר בפורמטים של גוגל דרייב (כולל regex למקרי קצה)
+    // תמיכה בפורמטים שונים של קישורים או ב-ID נקי
     const match = url.match(/\/d\/(.+?)\//) || url.match(/id=(.+?)(&|$)/);
     return match ? match[1] : url.split('/d/')[1]?.split('/')[0] || url;
   }

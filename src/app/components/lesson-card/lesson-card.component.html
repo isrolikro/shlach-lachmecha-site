@@ -1,11 +1,9 @@
 <div class="lesson-card" [attr.lang]="currentLang">
   <div class="card-header">
     <h3 class="lesson-title">{{ displayTitle }}</h3>
-    
     <div class="card-body" *ngIf="displayContent">
-      <p class="toc-content" [class.expanded]="isExpanded">
-        {{ displayContent }}
-      </p>
+      <p class="toc-content" [class.expanded]="isExpanded" [innerHTML]="displayContent"></p>
+      
 
       <button 
         *ngIf="displayContent.length > 150" 
@@ -16,6 +14,7 @@
       </button>
     </div>
   </div>
+
 
   <div class="card-footer">
     <a 
