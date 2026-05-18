@@ -3,8 +3,6 @@
   --gold-color: #d4af37;
   --white: #ffffff;
   font-family: 'Assistant', sans-serif;
-  
-  // מבטיח שכל האלמנטים יחשבו פדינג בתוך הרוחב
   * { box-sizing: border-box; }
 }
 
@@ -14,7 +12,7 @@
   padding: 0 20px;
 }
 
-/* --- Top Bar (Language Switcher) --- */
+/* --- Top Bar --- */
 .top-bar {
   background-color: var(--teal-color);
   padding: 8px 0;
@@ -33,11 +31,11 @@
   }
 }
 
-/* --- Banner & Titles --- */
+/* --- Banner --- */
 .header-banner {
   background: linear-gradient(135deg, #163e4f 0%, #205c75 100%);
   color: var(--white);
-  padding: 40px 0;
+  padding: 35px 0;
   border-bottom: 4px solid var(--gold-color);
   position: relative;
 
@@ -49,27 +47,55 @@
   }
 }
 
+/* --- Logo --- */
+.logo-area {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .logo {
+    height: 130px;
+    width: auto;
+    filter: drop-shadow(0 4px 12px rgba(0,0,0,0.3));
+    transition: transform 0.3s ease;
+
+    &:hover { transform: scale(1.03); }
+  }
+}
+
+/* --- Titles --- */
 .titles-section {
   text-align: center;
-  
+
   .main-title {
     color: var(--gold-color);
-    font-size: clamp(30px, 5vw, 60px);
+    font-size: clamp(28px, 4.5vw, 58px);
     margin: 0;
     font-weight: 800;
     line-height: 1.1;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.2);
   }
-  .sub-title { font-size: 20px; margin: 8px 0; opacity: 0.9; }
-  .decorator { width: 80px; height: 2px; background: var(--gold-color); margin: 12px auto; opacity: 0.7; }
-  .extra-title { font-size: 17px; font-style: italic; opacity: 0.8; }
+  .sub-title {
+    font-size: clamp(15px, 2vw, 20px);
+    margin: 10px 0;
+    opacity: 0.9;
+    line-height: 1.5;
+  }
+  .decorator {
+    width: 80px;
+    height: 2px;
+    background: var(--gold-color);
+    margin: 12px auto;
+    opacity: 0.7;
+  }
+  .extra-title {
+    font-size: clamp(13px, 1.5vw, 17px);
+    font-style: italic;
+    opacity: 0.8;
+  }
 }
 
-.logo-area .logo {
-  height: 90px;
-  width: auto;
-}
-
-/* --- לוגיקת החיפוש (Desktop & Mobile) --- */
+/* --- Search --- */
 .search-area {
   display: flex;
   justify-content: flex-end;
@@ -77,34 +103,31 @@
   .input-wrapper {
     position: relative;
     width: 100%;
-    max-width: 280px;
+    max-width: 260px;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 
     input {
       width: 100%;
-      height: 40px;
-      border-radius: 20px;
+      height: 42px;
+      border-radius: 21px;
       border: 1px solid rgba(212, 175, 55, 0.5);
       background: rgba(255, 255, 255, 0.1);
       color: white;
       outline: none;
       font-size: 15px;
+      font-family: 'Assistant', sans-serif;
       transition: 0.3s;
+
+      &::placeholder { color: rgba(255,255,255,0.6); }
 
       &:focus {
         background: rgba(255, 255, 255, 0.2);
         border-color: var(--gold-color);
+        box-shadow: 0 0 0 3px rgba(212,175,55,0.15);
       }
 
-      // הגדרות כיוון וריווח לפי שפה (מונע כפילות ובלגן)
-      [dir="rtl"] & {
-        padding: 0 45px 0 15px;
-        text-align: right;
-      }
-      [dir="ltr"] & {
-        padding: 0 15px 0 45px;
-        text-align: left;
-      }
+      [dir="rtl"] & { padding: 0 48px 0 15px; text-align: right; }
+      [dir="ltr"] & { padding: 0 15px 0 48px; text-align: left; }
     }
 
     .search-icon {
@@ -112,78 +135,81 @@
       top: 50%;
       transform: translateY(-50%);
       cursor: pointer;
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       z-index: 5;
+      width: 42px;
+      height: 42px;
       display: flex;
       align-items: center;
       justify-content: center;
 
-      // הצמדת האייקון לצד הנכון
-      [dir="rtl"] & { right: 15px; left: auto; }
-      [dir="ltr"] & { left: 15px; right: auto; }
+      [dir="rtl"] & { right: 0; left: auto; }
+      [dir="ltr"] & { left: 0; right: auto; }
     }
   }
 }
 
-/* --- התאמה למובייל (רספונסיביות) --- */
+/* --- Mobile --- */
 @media (max-width: 768px) {
   .header-banner {
-    padding: 25px 0;
-    
+    padding: 20px 0 18px;
+
     .banner-grid {
-      grid-template-columns: 1fr; // הכל בעמודה אחת
+      grid-template-columns: 1fr;
       text-align: center;
+      gap: 12px;
     }
   }
 
-  .logo-area { display: none; }
+  /* לוגו במובייל — קטן ומרוכז מעל הכותרת */
+  .logo-area {
+    order: -1;
 
-  .search-area {
-    position: absolute;
-    top: 15px;
-    z-index: 100;
-    
-    // מיקום האייקון הסגור בפינה לפי השפה
-    // [dir="rtl"] & { left: 20px; right: auto; }
-    // [dir="ltr"] & { right: 20px; left: auto; }
-
-    .input-wrapper {
-      max-width: 40px; // מצב סגור - רק האייקון
-      background: rgba(22, 62, 79, 0.5);
-      border-radius: 20px;
-      overflow: hidden;
-
-      input {
-        opacity: 0;
-        cursor: pointer;
-      }
-    }
-
-    // מצב פתוח במובייל
-    &.mobile-open {
-      width: calc(100% - 40px);
-      [dir="rtl"] & { right: 20px; left: 20px; }
-      [dir="ltr"] & { left: 20px; right: 20px; }
-
-      .input-wrapper {
-        max-width: 100%;
-        background: rgba(16, 46, 58, 0.98);
-        border: 1px solid var(--gold-color);
-        box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-
-        input {
-          opacity: 1;
-          cursor: text;
-        }
-      }
+    .logo {
+      height: 70px;
     }
   }
 
   .titles-section {
-    order: -1;
+    order: 0;
     padding: 0 10px;
-    .main-title { font-size: 28px; }
-    .sub-title { font-size: 18px; }
+  }
+
+  /* חיפוש במובייל — אייקון בפינה שנפתח */
+  .search-area {
+    position: absolute;
+    top: 12px;
+    z-index: 100;
+
+    [dir="rtl"] & { left: 16px; right: auto; }
+    [dir="ltr"] & { right: 16px; left: auto; }
+
+    .input-wrapper {
+      max-width: 44px;
+      background: rgba(22, 62, 79, 0.5);
+      border-radius: 22px;
+      overflow: hidden;
+
+      input { opacity: 0; cursor: pointer; }
+    }
+
+    &.mobile-open {
+      width: calc(100% - 32px);
+      left: 16px;
+      right: 16px;
+
+      .input-wrapper {
+        max-width: 100%;
+        background: rgba(16, 46, 58, 0.97);
+        border: 1px solid var(--gold-color);
+        box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+
+        input { opacity: 1; cursor: text; }
+      }
+    }
   }
 }
 
+@media (max-width: 480px) {
+  .logo-area .logo { height: 55px; }
+}

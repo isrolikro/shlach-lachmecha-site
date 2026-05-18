@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Input, SimpleChanges } from '@angular/core';
+import { Component, OnInit, OnDestroy, OnChanges, Input, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DriveDataService } from '../../services/drive-data.service';
 import { LanguageService } from '../../services/language.service';
@@ -16,13 +16,15 @@ const GLOBAL_ORDER = Object.values(DriveDataService.CATEGORIES_CONFIG).flat();
   templateUrl: './archive-browser.component.html',
   styleUrl: './archive-browser.component.scss'
 })
-export class ArchiveBrowserComponent implements OnInit, OnDestroy {
+export class ArchiveBrowserComponent implements OnInit, OnChanges, OnDestroy {
   @Input() searchTerm: string = '';
-  
+
   allLessons: Lesson[] = [];
+  allLetters: Lesson[] = [];
   filteredLessons: Lesson[] = [];
   selectedCategory: string | null = null;
   currentLang: 'he' | 'ru' = 'he';
+  isLoading = true;
   private langSub!: Subscription;
 
   ui: any = {
@@ -76,15 +78,24 @@ export class ArchiveBrowserComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.langSub = this.langService.currentLang$.subscribe(lang => {
       this.currentLang = lang;
-      if (!this.selectedCategory) this.selectCategory('בראשית');
+      if (!this.selectedCategory) this.selectedCategory = 'בראשית';
     });
 
     this.driveService.getLessons().subscribe({
       next: (lessons) => {
         this.allLessons = lessons;
+        this.isLoading = false;
         this.filterLessons();
       },
-      error: (err) => console.error('שגיאה בטעינת שיעורים:', err)
+      error: (err) => {
+        console.error('שגיאה בטעינת שיעורים:', err);
+        this.isLoading = false;
+      }
+    });
+
+    this.driveService.getLetters().subscribe({
+      next: (letters) => { this.allLetters = letters; this.filterLessons(); },
+      error: (err) => console.error('שגיאה בטעינת מכתבים:', err)
     });
   }
 
@@ -103,34 +114,31 @@ export class ArchiveBrowserComponent implements OnInit, OnDestroy {
   }
 
   filterLessons(): void {
-    // 1. שלב הסינון
+    const term = this.searchTerm.toLowerCase().trim();
+
+    if (this.selectedCategory === 'מכתבים') {
+      this.filteredLessons = term
+        ? this.allLetters.filter(l =>
+            l.title.toLowerCase().includes(term) || l.description.toLowerCase().includes(term)
+          )
+        : [...this.allLetters];
+      return;
+    }
+
     let results = this.allLessons.filter(lesson => {
-      const term = this.searchTerm ? this.searchTerm.toLowerCase().trim() : '';
-      const name = (lesson.title || '').toLowerCase();
-      const desc = (lesson.description || '').toLowerCase();
-      const matchesSearch = name.includes(term) || desc.includes(term);
-
-      if (term !== '') {
-        return matchesSearch;
+      if (term) {
+        return lesson.title.toLowerCase().includes(term) || lesson.description.toLowerCase().includes(term);
       }
-
       return !this.selectedCategory || lesson.humash === this.selectedCategory;
     });
 
-    // 2. שלב המיון לפי סדר הפרשיות (GLOBAL_ORDER)
     this.filteredLessons = results.sort((a, b) => {
-      const indexA = GLOBAL_ORDER.indexOf(a.parasha);
-      const indexB = GLOBAL_ORDER.indexOf(b.parasha);
-
-      const posA = indexA === -1 ? 999 : indexA;
-      const posB = indexB === -1 ? 999 : indexB;
-
-      // אם מדובר באותה פרשה, מציגים את השנה המאוחרת יותר למעלה
-      if (posA === posB) {
-        return (b.year || '').localeCompare(a.year || '');
-      }
-
-      return posA - posB;
+      const posA = GLOBAL_ORDER.indexOf(a.parasha);
+      const posB = GLOBAL_ORDER.indexOf(b.parasha);
+      const iA = posA === -1 ? 999 : posA;
+      const iB = posB === -1 ? 999 : posB;
+      if (iA !== iB) return iA - iB;
+      return (b.year || '').localeCompare(a.year || '');
     });
   }
 

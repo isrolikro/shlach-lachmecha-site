@@ -1,17 +1,17 @@
 .lesson-card {
   background: #ffffff;
   border-radius: 12px;
-  padding: 30px 25px 20px;
+  padding: 22px 20px 16px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  min-height: 250px;
+  min-height: 230px;
   border: 1px solid #eeeeee;
-  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  transition: all 0.35s cubic-bezier(0.165, 0.84, 0.44, 1);
   position: relative;
-  text-align: right; // ברירת מחדל לעברית
+  text-align: right;
 
-  // פס זהב בצד - מותאם לכיוון השפה
+  /* פס זהב צדדי */
   &::before {
     content: '';
     position: absolute;
@@ -20,56 +20,56 @@
     width: 3px;
     background-color: var(--gold-color, #d4af37);
     right: 0;
-    opacity: 0.4;
-    transition: 0.4s;
+    border-radius: 2px;
+    opacity: 0.35;
+    transition: 0.35s;
   }
 
   &:hover {
-    transform: translateY(-5px);
-    border-color: var(--teal-color, #1a4b5e);
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.04);
+    transform: translateY(-4px);
+    border-color: #c8dde6;
+    box-shadow: 0 10px 30px rgba(26, 75, 94, 0.08);
 
     &::before {
       opacity: 1;
-      top: 15%;
-      bottom: 15%;
+      top: 12%;
+      bottom: 12%;
     }
   }
 
+  /* --- כותרת --- */
   .lesson-title {
-    font-size: 1.3rem;
+    font-size: 1.1rem;
     color: var(--teal-color, #1a4b5e);
     font-weight: 700;
-    line-height: 1.3;
-    margin: 0 0 15px 0;
+    line-height: 1.35;
+    margin: 0 0 12px 0;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
 
+  /* --- גוף --- */
   .card-body {
     flex-grow: 1;
-    margin-bottom: 10px;
-    padding: 15px 0;
-    border-top: 1px solid #f9f9f9;
+    margin-bottom: 8px;
+    padding: 12px 0;
+    border-top: 1px solid #f5f5f5;
 
     .toc-content {
-      font-size: 0.95rem;
-      color: #444;
+      font-size: 0.9rem;
+      color: #555;
       line-height: 1.6;
       margin: 0;
-      white-space: pre-wrap; // שומר על ירידות שורה מהדרייב
+      white-space: pre-wrap;
       text-align: inherit;
-      
-      // הגדרת חיתוך טקסט ל-3 שורות כברירת מחדל
       display: -webkit-box;
       -webkit-line-clamp: 3;
       -webkit-box-orient: vertical;
       overflow: hidden;
       transition: all 0.3s ease;
 
-      // מצב מורחב
       &.expanded {
         display: block;
         -webkit-line-clamp: unset;
@@ -81,67 +81,72 @@
       background: none;
       border: none;
       color: var(--gold-color, #d4af37);
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       font-weight: 600;
       cursor: pointer;
-      margin-top: 10px;
+      margin-top: 8px;
       padding: 0;
       display: flex;
       align-items: center;
-      gap: 5px;
-      opacity: 0.9;
-      
-      &:hover {
-        opacity: 1;
-        text-decoration: underline;
-      }
+      gap: 4px;
+
+      &:hover { opacity: 0.75; text-decoration: underline; }
 
       .arrow {
-        font-size: 0.7rem;
+        font-size: 0.65rem;
         transition: transform 0.3s;
         &.rotated { transform: rotate(180deg); }
       }
     }
   }
 
+  /* --- footer --- */
   .card-footer {
     display: flex;
     align-items: center;
-    border-top: 1px solid #f8f8f8;
+    border-top: 1px solid #f5f5f5;
     margin-top: auto;
-    padding-top: 15px;
+    padding-top: 12px;
   }
 
   .vertical-divider {
     width: 1px;
-    height: 18px;
-    background-color: #eee;
+    height: 16px;
+    background-color: #e8e8e8;
   }
 
   .nav-link {
     flex: 1;
     text-decoration: none;
-    font-size: 0.85rem;
+    font-size: 0.82rem;
     font-weight: 600;
     text-align: center;
-    transition: 0.3s;
-    padding: 8px 0;
+    transition: opacity 0.2s;
+    padding: 6px 0;
 
     &.view { color: var(--teal-color, #1a4b5e); }
-    &.download { color: #b08d1a; }
-
-    &:hover {
-      opacity: 0.6;
-    }
+    &.download { color: #a07a10; }
+    &:hover { opacity: 0.65; }
   }
 
-  // --- תמיכה ברוסית (LTR) ---
+  /* --- RTL/LTR --- */
   &:host-context([lang='ru']), &[lang='ru'] {
     text-align: left;
+    &::before { right: auto; left: 0; }
+  }
+}
 
-    &::before {
-      right: auto;
-      left: 0;
-    }
+/* כרטיס קטן יותר בפלפון */
+@media (max-width: 768px) {
+  .lesson-card {
+    min-height: 190px;
+    padding: 16px 14px 12px;
+    border-radius: 10px;
+
+    .lesson-title { font-size: 0.95rem; }
+
+    .card-body .toc-content { font-size: 0.85rem; }
+
+    .nav-link { font-size: 0.78rem; }
   }
 }

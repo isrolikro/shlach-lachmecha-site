@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Lesson } from '../../models/lesson.model';
 
 @Component({
   selector: 'app-lesson-card',
@@ -9,7 +10,7 @@ import { CommonModule } from '@angular/common';
   styleUrl: './lesson-card.component.scss'
 })
 export class LessonCardComponent {
-  @Input() lesson!: any; 
+  @Input() lesson!: Lesson;
   @Input() currentLang: 'he' | 'ru' = 'he';
 
   isExpanded = false;

@@ -2,34 +2,35 @@
   display: flex;
   min-height: 80vh;
   background: #fdfdfd;
-  // הכיוון נקבע אוטומטית לפי מה שהגדרנו ב-Service על ה-body
 }
 
+/* ===== SIDEBAR ===== */
 .sidebar {
-  width: 280px;
+  width: 260px;
   flex-shrink: 0;
   background: white;
-  border-inline-end: 1px solid #eee; // קו הפרדה עדין
+  border-inline-end: 1px solid #eee;
   padding-top: 20px;
 
   .sidebar-header {
-    padding: 15px 25px;
+    padding: 14px 22px;
     font-weight: 800;
     color: #1a4a5e;
-    font-size: 1.1rem;
-    border-bottom: 2px solid #f9f9f9;
-    margin-bottom: 10px;
+    font-size: 1.05rem;
+    border-bottom: 2px solid #f4f4f4;
+    margin-bottom: 8px;
   }
 
   .menu-group {
-    margin-bottom: 20px;
+    margin-bottom: 18px;
 
     .group-label {
-      padding: 15px 25px 5px;
-      font-size: 0.75rem;
-      color: #b0b0b0;
-      font-weight: bold;
-      letter-spacing: 0.5px;
+      padding: 12px 22px 4px;
+      font-size: 0.72rem;
+      color: #b8b8b8;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
     }
 
     .group-items {
@@ -38,75 +39,186 @@
       margin: 0;
 
       li {
-        padding: 12px 25px;
+        padding: 11px 22px;
         cursor: pointer;
-        font-size: 1rem;
-        color: #444;
-        transition: all 0.2s ease;
+        font-size: 0.97rem;
+        color: #555;
+        transition: all 0.18s ease;
+        border-inline-start: 3px solid transparent;
 
-        &:hover { background: #f8f8f8; color: #1a4a5e; }
+        &:hover {
+          background: #f6f9fa;
+          color: #1a4a5e;
+        }
 
         &.active {
-          background: #f0f5f7;
+          background: #f0f5f8;
           color: #1a4a5e;
           font-weight: 700;
-          border-inline-start: 4px solid #d4af37; // פס זהב בבחירה
+          border-inline-start-color: #d4af37;
         }
       }
     }
   }
 }
 
+/* ===== MAIN CONTENT ===== */
 .main-content {
   flex-grow: 1;
-  padding: 40px;
+  padding: 32px 36px;
+  min-width: 0; /* חשוב למניעת overflow */
 
   .content-header {
-    margin-bottom: 30px;
+    margin-bottom: 28px;
     border-bottom: 1px solid #eee;
-    padding-bottom: 15px;
+    padding-bottom: 14px;
     display: flex;
     justify-content: space-between;
     align-items: baseline;
+    flex-wrap: wrap;
+    gap: 8px;
 
-    h2 { margin: 0; font-size: 2.2rem; color: #1a4a5e; }
-    .results-count { color: #888; font-size: 0.9rem; }
-  }
-}
+    h2 {
+      margin: 0;
+      font-size: clamp(1.4rem, 3vw, 2rem);
+      color: #1a4a5e;
+    }
 
-.lessons-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 30px;
-}
-
-// התאמה למובייל - הסיידבר הופך לסרגל עליון נגלל
-@media (max-width: 768px) {
-  .archive-layout {
-    flex-direction: column;
-  }
-
-  .sidebar {
-    width: 100%;
-    border-inline-end: none;
-    border-bottom: 1px solid #eee;
-    padding-bottom: 10px;
-
-    .group-label { display: none; } // מסתירים כותרות קבוצות במובייל לחיסכון במקום
-    
-    .group-items {
-      display: flex;
-      overflow-x: auto;
-      padding: 0 15px;
-      li {
-        white-space: nowrap;
-        padding: 8px 15px;
-        margin-bottom: 5px;
-        border-bottom: none !important;
-        &.active { border-inline-start: none; border-bottom: 3px solid #d4af37 !important; }
-      }
+    .results-count {
+      color: #999;
+      font-size: 0.88rem;
+      white-space: nowrap;
     }
   }
 }
 
-// ... (שאר עיצובי ה-lesson-card שלך נשארים אותו דבר)
+/* ===== GRID ===== */
+.lessons-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 24px;
+}
+
+/* ===== LOADING ===== */
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 0;
+  color: #aaa;
+  gap: 16px;
+
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #eee;
+    border-top-color: #1a4a5e;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ===== EMPTY STATE ===== */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 80px 0;
+  color: #bbb;
+  gap: 12px;
+
+  .empty-icon { font-size: 2.5rem; }
+}
+
+/* ===== TABLET (768px–1024px) ===== */
+@media (max-width: 1024px) {
+  .sidebar { width: 220px; }
+  .main-content { padding: 24px 24px; }
+  .lessons-grid { gap: 18px; }
+}
+
+/* ===== MOBILE (≤768px) ===== */
+@media (max-width: 768px) {
+  .archive-layout { flex-direction: column; }
+
+  /* Sidebar הופך לסרגל tabs אופקי */
+  .sidebar {
+    width: 100%;
+    border-inline-end: none;
+    border-bottom: 2px solid #eee;
+    padding-top: 0;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+
+    .sidebar-header { display: none; }
+    .group-label { display: none; }
+
+    .sidebar-nav {
+      display: flex;
+      overflow-x: auto;
+      padding: 0 8px;
+      gap: 0;
+      scrollbar-width: none;
+      &::-webkit-scrollbar { display: none; }
+    }
+
+    .menu-group {
+      margin-bottom: 0;
+      display: contents; /* כל ה-li-ים מוזרמים ישר לתוך ה-flex */
+    }
+
+    .group-items {
+      display: contents;
+
+      li {
+        white-space: nowrap;
+        padding: 14px 16px;
+        font-size: 0.9rem;
+        border-inline-start: none;
+        border-bottom: 3px solid transparent;
+        color: #666;
+
+        &:hover { background: transparent; color: #1a4a5e; }
+
+        &.active {
+          background: transparent;
+          color: #1a4a5e;
+          border-bottom-color: #d4af37;
+          font-weight: 700;
+        }
+      }
+    }
+  }
+
+  /* תוכן ראשי */
+  .main-content {
+    padding: 20px 16px;
+
+    .content-header {
+      margin-bottom: 18px;
+      h2 { font-size: 1.3rem; }
+    }
+  }
+
+  /* גריד 2 עמודות בפלפון */
+  .lessons-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+}
+
+/* ===== SMALL MOBILE (≤420px) — עמודה אחת ===== */
+@media (max-width: 420px) {
+  .lessons-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}

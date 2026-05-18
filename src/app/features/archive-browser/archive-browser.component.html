@@ -36,11 +36,16 @@
       </div>
     </header>
 
-    @if (filteredLessons.length > 0) {
+    @if (isLoading) {
+      <div class="loading-state">
+        <div class="spinner"></div>
+        <p>{{ currentLang === 'he' ? 'טוען שיעורים...' : 'Загрузка...' }}</p>
+      </div>
+    } @else if (filteredLessons.length > 0) {
       <div class="lessons-grid">
         @for (lesson of filteredLessons; track lesson.id) {
-          <app-lesson-card 
-            [lesson]="lesson" 
+          <app-lesson-card
+            [lesson]="lesson"
             [currentLang]="currentLang">
           </app-lesson-card>
         }

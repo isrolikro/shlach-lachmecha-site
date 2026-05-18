@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, map } from 'rxjs';
+import { Observable, expand, reduce, EMPTY, map } from 'rxjs';
 import { Lesson } from '../models/lesson.model';
 
 @Injectable({
@@ -14,42 +14,83 @@ export class DriveDataService {
     'ויקרא': ['ויקרא', 'צו', 'שמיני', 'תזריע', 'מצורע', 'אחרי מות', 'קדושים', 'אמור', 'בהר', 'בחוקותי'],
     'במדבר': ['במדבר', 'נשא', 'בהעלותך', 'שלח', 'קרח', 'חקת', 'בלק', 'פנחס', 'מטות', 'מסעי'],
     'דברים': ['דברים', 'ואתחנן', 'עקב', 'ראה', 'שופטים', 'כי תצא', 'כי תבוא', 'נצבים', 'וילך', 'האזינו', 'וזאת הברכה'],
-    'חגים ומועדים': ['ראש השנה', 'יום כיפור', 'סוכות', 'שמיני עצרת', 'שמחת תורה', 'חנוכה', 'פורים', 'פסח', 'שבועות', 'שלושת השבועות', 'תשעה באב', 'אלול', 'חודש תשרי']
+    'חגים ומועדים': ['ראש השנה', 'יום כיפור', 'סוכות', 'שמיני עצרת', 'שמחת תורה','יט כסלו', 'לג בעומר', 'חנוכה', 'פורים', 'פסח', 'שבועות', 'שלושת השבועות', 'תשעה באב', 'אלול', 'חודש תשרי']
   };
 
   private readonly ALL_PARASHOT_ORDER = Object.values(DriveDataService.CATEGORIES_CONFIG).flat();
 
   private readonly API_KEY = 'AIzaSyA6nNLhbu6wAQbUVcsKON5YZLIpQTzMZvQ';
   private readonly FOLDER_ID = '182yS_949b2rbkUK9R1R0eV4j_TElVxps';
+  private readonly LETTERS_FOLDER_ID = '1e7GjRKyLNYca-Qha13oBYYwrLxja2-ya';
   private readonly API_URL = 'https://www.googleapis.com/drive/v3/files';
 
   constructor(private http: HttpClient) {}
 
   getLessons(): Observable<Lesson[]> {
     const query = `'${this.FOLDER_ID}' in parents and trashed = false`;
-    const url = `${this.API_URL}?q=${encodeURIComponent(query)}&key=${this.API_KEY}&fields=files(id, name, webContentLink, description)&pageSize=100`;
+    const fields = 'nextPageToken,files(id,name,webContentLink,description)';
+    const baseUrl = `${this.API_URL}?q=${encodeURIComponent(query)}&key=${this.API_KEY}&fields=${encodeURIComponent(fields)}&pageSize=1000`;
 
-    return this.http.get<any>(url).pipe(
-      map((res) => {
-        if (!res || !res.files) return [];
+    return this.http.get<any>(baseUrl).pipe(
+      expand((res) =>
+        res.nextPageToken
+          ? this.http.get<any>(`${baseUrl}&pageToken=${res.nextPageToken}`)
+          : EMPTY
+      ),
+      reduce((allFiles: any[], res: any) => allFiles.concat(res.files || []), []),
+      map((files: any[]) => {
+        const lessons: Lesson[] = files
+          .filter((file) => file.name?.toLowerCase().endsWith('.pdf'))
+          .map((file) => this.parseFileName(file));
 
-        const lessons: Lesson[] = res.files
-          .filter((file: any) => file.name && file.name.toLowerCase().endsWith('.pdf'))
-          .map((file: any) => this.parseFileName(file));
-
-        return lessons.sort((a: Lesson, b: Lesson) => {
+        return lessons.sort((a, b) => {
           const indexA = this.ALL_PARASHOT_ORDER.indexOf(a.parasha);
           const indexB = this.ALL_PARASHOT_ORDER.indexOf(b.parasha);
-
-          if (indexA !== indexB) {
-            const finalA = indexA === -1 ? 999 : indexA;
-            const finalB = indexB === -1 ? 999 : indexB;
-            return finalA - finalB;
-          }
+          const posA = indexA === -1 ? 999 : indexA;
+          const posB = indexB === -1 ? 999 : indexB;
+          if (posA !== posB) return posA - posB;
           return (b.year || '').localeCompare(a.year || '');
         });
       })
     );
+  }
+
+  getLetters(): Observable<Lesson[]> {
+    const query = `'${this.LETTERS_FOLDER_ID}' in parents and trashed = false`;
+    const fields = 'nextPageToken,files(id,name,webContentLink,description)';
+    const baseUrl = `${this.API_URL}?q=${encodeURIComponent(query)}&key=${this.API_KEY}&fields=${encodeURIComponent(fields)}&pageSize=1000`;
+
+    return this.http.get<any>(baseUrl).pipe(
+      expand((res) =>
+        res.nextPageToken
+          ? this.http.get<any>(`${baseUrl}&pageToken=${res.nextPageToken}`)
+          : EMPTY
+      ),
+      reduce((allFiles: any[], res: any) => allFiles.concat(res.files || []), []),
+      map((files: any[]) =>
+        files
+          .filter((file) => file.name?.toLowerCase().endsWith('.pdf'))
+          .map((file) => this.parseLetterFile(file))
+      )
+    );
+  }
+
+  private parseLetterFile(file: any): Lesson {
+    const rawName = file.name || '';
+    const cleanName = rawName.replace(/\.pdf$/i, '').replace(/^\d+\s+/, '');
+    const yearMatch = rawName.match(/תשפ[א-ת_]+/) || rawName.match(/\d{4}/);
+    const year = yearMatch ? yearMatch[0].replace('_', '"') : '';
+
+    return {
+      id: file.id,
+      title: cleanName,
+      humash: 'מכתבים',
+      parasha: '',
+      year,
+      language: 'HE',
+      pdfUrl: file.webContentLink,
+      description: file.description || '',
+    };
   }
 
   private parseFileName(file: any): Lesson {
