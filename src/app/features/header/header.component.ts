@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter } from '@angular/core';
+import { Component, Output, EventEmitter, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LanguageService } from '../../services/language.service';
 
@@ -30,11 +30,11 @@ translations: any = {
     }
   };
 
+  @ViewChild('searchArea') searchAreaRef!: ElementRef;
+
   currentLang = 'he';
   t = this.translations['he'];
-  
-  // משתנה חדש לניהול מצב החיפוש במובייל
-  isSearchOpen = false; 
+  isSearchOpen = false;
 
   constructor(private langService: LanguageService) {
     this.langService.currentLang$.subscribe(lang => {
@@ -43,24 +43,25 @@ translations: any = {
     });
   }
 
-  // פונקציה להחלפת שפה
-  switchLang(lang: 'he' | 'ru') {
-    this.langService.setLanguage(lang);
-  }
-
-  // פונקציה חדשה: פותחת וסוגרת את מצב החיפוש
-  toggleSearch() {
-    this.isSearchOpen = !this.isSearchOpen;
-    
-    // אופציונלי: אם סוגרים את החיפוש, מאפסים את התוצאות
-    if (!this.isSearchOpen) {
+  @HostListener('document:click', ['$event.target'])
+  onDocumentClick(target: EventTarget | null) {
+    if (this.isSearchOpen && !this.searchAreaRef?.nativeElement.contains(target)) {
+      this.isSearchOpen = false;
       this.searchChanged.emit('');
     }
   }
 
+  switchLang(lang: 'he' | 'ru') {
+    this.langService.setLanguage(lang);
+  }
+
+  toggleSearch() {
+    this.isSearchOpen = !this.isSearchOpen;
+    if (!this.isSearchOpen) this.searchChanged.emit('');
+  }
+
   onSearch(event: any) {
-    const term = event.target.value;
-    this.searchChanged.emit(term);
+    this.searchChanged.emit(event.target.value);
   }
 
 }

@@ -1,41 +1,80 @@
-/* src/styles.scss */
+/* ================================================
+   GLOBAL STYLES — שלח לחמך
+   ================================================ */
 
-// 1. הגדרת פלטת הצבעים מתוך הלוגו
+@import url('https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700;800&family=Heebo:wght@300;400;700;800&family=Frank+Ruhl+Libre:wght@400;700;900&display=swap');
+
 :root {
-    // הכחול-עמוק מהרקע
-    --primary-color: #1a4b5e;  
-    
-    // הזהב-קרם מהאיור והטקסט
-    --accent-color: #e8d3b0;   
-    
-    // צבע רקע עדין לעמודים (לא לבן "בוהק")
-    --page-bg: #fdfaf5;      
-    
-    // צבע טקסט ראשי
-    --text-dark: #2c3e50;
-    
-    --white: #ffffff;
-  }
-  
-  // 2. הגדרות בסיסיות לגוף האתר
-  body {
-    margin: 0;
-    // הגדרת הפונטים עם העדפה ל-Assistant
-    font-family: 'Assistant', 'Heebo', sans-serif; 
-    background-color: var(--page-bg);
-    color: var(--text-dark);
-    
-    // הכנה לכך שהאתר הוא בעברית
-    direction: rtl; 
-    -webkit-font-smoothing: antialiased;
-  }
-  
-  // 3. כמה מחלקות עזר בסיסיות (Helper Classes)
-  .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 1rem;
-  }
-  
-  .text-gold { color: var(--accent-color); }
-  .bg-primary { background-color: var(--primary-color); }
+  --primary:      #1a4b5e;
+  --primary-dark: #122f3c;
+  --primary-mid:  #205c75;
+  --gold:         #d4af37;
+  --gold-light:   #e8d080;
+  --gold-pale:    #f5e9be;
+  --cream:        #fdf8ef;
+  --cream-light:  #fffdf8;
+  --text-dark:    #2c3e50;
+  --text-mid:     #55697a;
+  --border:       #e8e0d0;
+  --white:        #ffffff;
+  --shadow-soft:  0 4px 24px rgba(26, 75, 94, 0.08);
+  --shadow-card:  0 8px 32px rgba(26, 75, 94, 0.10);
+  --radius:       14px;
+  --radius-sm:    8px;
+  --transition:   0.28s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* --- Reset & Base --- */
+*, *::before, *::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  font-family: 'Assistant', 'Heebo', sans-serif;
+  background-color: var(--cream);
+  color: var(--text-dark);
+  direction: rtl;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* רקע עדין — תבנית נקודות */
+  background-image: radial-gradient(
+    circle,
+    rgba(212, 175, 55, 0.06) 1px,
+    transparent 1px
+  );
+  background-size: 28px 28px;
+}
+
+/* --- Text selection --- */
+::selection {
+  background: var(--gold-pale);
+  color: var(--primary-dark);
+}
+
+/* --- Custom Scrollbar --- */
+::-webkit-scrollbar { width: 7px; height: 7px; }
+::-webkit-scrollbar-track { background: #f0ebe0; }
+::-webkit-scrollbar-thumb {
+  background: var(--primary);
+  border-radius: 4px;
+  &:hover { background: var(--primary-mid); }
+}
+
+/* --- Container --- */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* --- Fade-in animation for cards --- */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}

@@ -14,7 +14,9 @@
     <div class="container banner-grid">
       
       <div class="side-section logo-area">
-        <img src="logo.png" alt="Logo" class="logo">
+        <a href="/" aria-label="חזור לדף הראשי">
+          <img src="logo.png" alt="Logo" class="logo">
+        </a>
       </div>
 
       <div class="center-section titles-section">
@@ -24,15 +26,22 @@
         <p class="extra-title">{{ t.extraTitle }}</p>
       </div>
 
-      <div class="side-section search-area" [class.mobile-open]="isSearchOpen">
+      <div class="side-section search-area" [class.mobile-open]="isSearchOpen" #searchArea>
         <div class="input-wrapper">
-          <input 
-          type="text" 
-          [placeholder]="t.searchPlaceholder" 
-          (input)="onSearch($event)"
-          #searchInput
+          <input
+            type="text"
+            [placeholder]="t.searchPlaceholder"
+            (input)="onSearch($event)"
+            #searchInput
           >
-          <span class="search-icon" (click)="toggleSearch()">🔍</span>
+          <button class="search-icon" (click)="toggleSearch()" aria-label="חיפוש">
+            <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
+                 fill="none" stroke="currentColor" stroke-width="2.2"
+                 stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="7.5"/>
+              <line x1="19.5" y1="19.5" x2="15.2" y2="15.2"/>
+            </svg>
+          </button>
         </div>
       </div>
 
