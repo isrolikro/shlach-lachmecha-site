@@ -17,6 +17,13 @@
   background-color: #122f3c;
   padding: 7px 0;
   direction: rtl !important;
+  position: relative;
+
+  .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
 
   .lang-switcher {
     display: flex;
@@ -35,6 +42,7 @@
     .divider { opacity: 0.3; }
   }
 }
+
 
 /* ===== HEADER BANNER ===== */
 .header-banner {
@@ -241,8 +249,11 @@
 
 /* ===== MOBILE ===== */
 @media (max-width: 768px) {
+  .main-header { position: relative; }
+
   .header-banner {
     padding: 22px 0 20px;
+    overflow: visible; /* מאפשר ל-search לצאת מהבאנר לכיוון top-bar */
 
     .banner-grid {
       grid-template-columns: 1fr;
@@ -261,33 +272,49 @@
     padding: 0 12px;
   }
 
+  /* הוצאת כפתור החיפוש מהבאנר לשורת top-bar */
   .search-area {
     position: absolute;
-    top: 10px;
-    z-index: 100;
+    top: 0; /* מתחיל מראש ה-main-header = שורת ה-top-bar */
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    height: 33px;
 
-    [dir="rtl"] & { left: 14px; right: auto; }
-    [dir="ltr"] & { right: 14px; left: auto; }
+    [dir="rtl"] & { left: 16px; right: auto; }
+    [dir="ltr"] & { right: 16px; left: auto; }
 
     .input-wrapper {
-      max-width: 46px;
+      max-width: 34px;
       overflow: hidden;
-      background: rgba(18, 47, 60, 0.6);
-      border-radius: 23px;
+      background: transparent;
+      border-radius: 17px;
+      height: 30px;
+      transition: max-width 0.4s cubic-bezier(0.4,0,0.2,1);
 
-      input { opacity: 0; cursor: pointer; }
+      input {
+        opacity: 0;
+        cursor: pointer;
+        height: 30px;
+      }
+
+      .search-icon {
+        width: 34px;
+        height: 30px;
+      }
     }
 
     &.mobile-open {
-      width: calc(100% - 28px);
-      left: 14px !important;
-      right: 14px !important;
+      width: calc(100% - 32px);
+      left: 16px !important;
+      right: 16px !important;
 
       .input-wrapper {
         max-width: 100%;
-        background: rgba(14, 38, 50, 0.97);
+        background: rgba(255,255,255,0.1);
         border: 1px solid var(--gold-color);
-        box-shadow: 0 6px 24px rgba(0,0,0,0.5);
+        box-shadow: 0 0 0 3px rgba(212,175,55,0.15);
+        height: 30px;
         input { opacity: 1; cursor: text; }
       }
     }

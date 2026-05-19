@@ -45,6 +45,38 @@
       text-transform: uppercase;
     }
 
+    .group-toggle {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 11px 20px 11px 16px;
+      background: none;
+      border: none;
+      border-top: 1px solid #f0e8d8;
+      font-family: 'Assistant', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      color: #8a7a6a;
+      cursor: pointer;
+      text-transform: uppercase;
+      transition: color 0.18s, background 0.18s;
+
+      &:hover { background: #fdf5e8; color: #5a4a3a; }
+
+      .chevron {
+        font-size: 1.1rem;
+        font-style: normal;
+        color: #c4a86a;
+        transition: transform 0.25s ease;
+        display: inline-block;
+        transform: rotate(90deg);
+
+        &.open { transform: rotate(-90deg); }
+      }
+    }
+
     .group-items {
       list-style: none;
       padding: 0;
@@ -222,12 +254,21 @@
     }
   }
 
-  /* שורה 2 — 5 חומשים */
+  /* שורה 2 — wrapper עם חץ */
+  .sub-tabs-wrapper {
+    position: relative;
+    overflow: hidden;
+  }
+
   .mobile-sub-tabs {
     display: flex;
     overflow-x: auto;
     scrollbar-width: none;
+    scroll-behavior: smooth;
     background: #f5f0e8;
+    padding-left: 44px;
+    padding-right: 44px;
+
     &::-webkit-scrollbar { display: none; }
 
     button {
@@ -251,6 +292,35 @@
         border-bottom-color: #d4af37;
         font-weight: 700;
       }
+    }
+  }
+
+  /* חצים — ימין ושמאל */
+  .sub-arrow-btn {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 42px;
+    border: none;
+    color: #1a4b5e;
+    font-size: 1.2rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    transition: color 0.18s;
+
+    &:hover { color: #d4af37; }
+
+    &.sub-arrow-left {
+      left: 0;
+      background: linear-gradient(to right, #f5f0e8 55%, transparent);
+    }
+
+    &.sub-arrow-right {
+      right: 0;
+      background: linear-gradient(to left, #f5f0e8 55%, transparent);
     }
   }
 

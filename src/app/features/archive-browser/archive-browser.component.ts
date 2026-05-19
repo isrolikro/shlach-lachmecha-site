@@ -9,6 +9,7 @@ import { LessonCardComponent } from '../../components/lesson-card/lesson-card.co
 // יצירת רשימה שטוחה אחת למיון - מחוץ למחלקה כדי למנוע שגיאות const
 const GLOBAL_ORDER = Object.values(DriveDataService.CATEGORIES_CONFIG).flat();
 const LETTER_SUBCATEGORIES = ['ברית מילה', 'ניחומים', 'ארגונים', 'קהילות', 'חגים', 'חנוכת הבית', 'מוסדות'];
+const HOLIDAY_SUBCATEGORIES = DriveDataService.CATEGORIES_CONFIG['חגים ומועדים'];
 
 @Component({
   selector: 'app-archive-browser',
@@ -26,6 +27,7 @@ export class ArchiveBrowserComponent implements OnInit, OnChanges, OnDestroy {
   selectedCategory: string | null = null;
   currentLang: 'he' | 'ru' = 'he';
   isLoading = true;
+  expandedGroups = new Set<string>(['humash']);
   private langSub!: Subscription;
 
   ui: any = {
@@ -57,9 +59,24 @@ export class ArchiveBrowserComponent implements OnInit, OnChanges, OnDestroy {
     },
     {
       id: 'holidays',
-      label: { he: 'חגים ומועדים', ru: 'Праздники' },
+      label: { he: 'מועדים', ru: 'Праздники' },
       items: [
-        { id: 'חגים ומועדים', label: { he: 'מועדים', ru: 'Праздники' } }
+        { id: 'חגים-הכל',       label: { he: 'הכל',           ru: 'Все' } },
+        { id: 'ראש השנה',       label: { he: 'ראש השנה',      ru: 'Рош Ашана' } },
+        { id: 'יום כיפור',      label: { he: 'יום כיפור',     ru: 'Йом Кипур' } },
+        { id: 'סוכות',          label: { he: 'סוכות',         ru: 'Суккот' } },
+        { id: 'שמיני עצרת',     label: { he: 'שמיני עצרת',    ru: 'Шмини Ацерет' } },
+        { id: 'שמחת תורה',      label: { he: 'שמחת תורה',     ru: 'Симхат Тора' } },
+        { id: 'יט כסלו',        label: { he: 'יט כסלו',       ru: 'Йуд-тет Кислев' } },
+        { id: 'לג בעומר',       label: { he: 'לג בעומר',      ru: 'Лаг баОмер' } },
+        { id: 'חנוכה',          label: { he: 'חנוכה',         ru: 'Ханука' } },
+        { id: 'פורים',          label: { he: 'פורים',         ru: 'Пурим' } },
+        { id: 'פסח',            label: { he: 'פסח',           ru: 'Песах' } },
+        { id: 'שבועות',         label: { he: 'שבועות',        ru: 'Шавуот' } },
+        { id: 'שלושת השבועות',  label: { he: 'שלושת השבועות', ru: 'Три недели' } },
+        { id: 'תשעה באב',       label: { he: 'תשעה באב',      ru: 'Тиша беАв' } },
+        { id: 'אלול',           label: { he: 'אלול',          ru: 'Элул' } },
+        { id: 'חודש תשרי',      label: { he: 'חודש תשרי',     ru: 'Месяц Тишрей' } },
       ]
     },
     {
@@ -117,9 +134,17 @@ export class ArchiveBrowserComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   get activeMobileTopTab(): 'humash' | 'holidays' | 'letters' {
-    if (this.selectedCategory === 'חגים ומועדים') return 'holidays';
+    if (this.selectedCategory === 'חגים-הכל' || (this.selectedCategory && HOLIDAY_SUBCATEGORIES.includes(this.selectedCategory))) return 'holidays';
     if (this.selectedCategory === 'מכתבים-הכל' || (this.selectedCategory && LETTER_SUBCATEGORIES.includes(this.selectedCategory))) return 'letters';
     return 'humash';
+  }
+
+  toggleGroup(groupId: string): void {
+    if (this.expandedGroups.has(groupId)) {
+      this.expandedGroups.delete(groupId);
+    } else {
+      this.expandedGroups.add(groupId);
+    }
   }
 
   selectMobileTopTab(tab: 'humash' | 'holidays' | 'letters'): void {
@@ -129,7 +154,9 @@ export class ArchiveBrowserComponent implements OnInit, OnChanges, OnDestroy {
         this.selectCategory('בראשית');
       }
     } else if (tab === 'holidays') {
-      this.selectCategory('חגים ומועדים');
+      if (this.selectedCategory !== 'חגים-הכל' && !HOLIDAY_SUBCATEGORIES.includes(this.selectedCategory || '')) {
+        this.selectCategory('חגים-הכל');
+      }
     } else {
       if (this.selectedCategory !== 'מכתבים-הכל' && !LETTER_SUBCATEGORIES.includes(this.selectedCategory || '')) {
         this.selectCategory('מכתבים-הכל');
@@ -144,6 +171,21 @@ export class ArchiveBrowserComponent implements OnInit, OnChanges, OnDestroy {
 
   filterLessons(): void {
     const term = this.searchTerm.toLowerCase().trim();
+
+    if (this.selectedCategory === 'חגים-הכל') {
+      this.filteredLessons = this.allLessons.filter(l =>
+        l.humash === 'חגים ומועדים' && (!term || l.title.toLowerCase().includes(term) || l.description.toLowerCase().includes(term))
+      );
+      return;
+    }
+
+    if (this.selectedCategory && HOLIDAY_SUBCATEGORIES.includes(this.selectedCategory)) {
+      this.filteredLessons = this.allLessons.filter(l =>
+        l.humash === 'חגים ומועדים' && l.parasha === this.selectedCategory &&
+        (!term || l.title.toLowerCase().includes(term) || l.description.toLowerCase().includes(term))
+      );
+      return;
+    }
 
     if (this.selectedCategory === 'מכתבים-הכל' || (this.selectedCategory && LETTER_SUBCATEGORIES.includes(this.selectedCategory))) {
       const subCat = this.selectedCategory === 'מכתבים-הכל' ? null : this.selectedCategory!.toLowerCase();
@@ -177,6 +219,10 @@ export class ArchiveBrowserComponent implements OnInit, OnChanges, OnDestroy {
     if (changes['searchTerm']) {
       this.filterLessons();
     }
+  }
+
+  scrollSubTabs(el: HTMLElement, dir: 'left' | 'right'): void {
+    el.scrollBy({ left: dir === 'left' ? -160 : 160, behavior: 'smooth' });
   }
 
   ngOnDestroy(): void {

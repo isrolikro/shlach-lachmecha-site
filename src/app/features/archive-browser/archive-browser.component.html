@@ -8,18 +8,23 @@
     <nav class="sidebar-nav desktop-only">
       @for (group of menuGroups; track group.id) {
         <div class="menu-group">
-          <div class="group-label">{{ group.label[currentLang] }}</div>
-          <ul class="group-items">
-            @for (item of group.items; track item.id) {
-              <li
-                [class.active]="selectedCategory === item.id"
-                (click)="selectCategory(item.id)"
-                role="button"
-                tabindex="0">
-                {{ item.label[currentLang] }}
-              </li>
-            }
-          </ul>
+          <button class="group-toggle" (click)="toggleGroup(group.id)">
+            <span>{{ group.label[currentLang] }}</span>
+            <span class="chevron" [class.open]="expandedGroups.has(group.id)">‹</span>
+          </button>
+          @if (expandedGroups.has(group.id)) {
+            <ul class="group-items">
+              @for (item of group.items; track item.id) {
+                <li
+                  [class.active]="selectedCategory === item.id"
+                  (click)="selectCategory(item.id)"
+                  role="button"
+                  tabindex="0">
+                  {{ item.label[currentLang] }}
+                </li>
+              }
+            </ul>
+          }
         </div>
       }
     </nav>
@@ -43,24 +48,47 @@
       </div>
       <!-- שורה 2: 5 חומשים (רק כשפרשיות פעיל) -->
       @if (activeMobileTopTab === 'humash') {
-        <div class="mobile-sub-tabs">
-          @for (item of menuGroups[0].items; track item.id) {
-            <button [class.active]="selectedCategory === item.id"
-                    (click)="selectCategory(item.id)">
-              {{ item.label[currentLang] }}
-            </button>
-          }
+        <div class="sub-tabs-wrapper">
+          <button class="sub-arrow-btn sub-arrow-right" (click)="scrollSubTabs(humashScroll, 'right')" aria-label="הקודם">‹</button>
+          <div class="mobile-sub-tabs" #humashScroll>
+            @for (item of menuGroups[0].items; track item.id) {
+              <button [class.active]="selectedCategory === item.id"
+                      (click)="selectCategory(item.id)">
+                {{ item.label[currentLang] }}
+              </button>
+            }
+          </div>
+          <button class="sub-arrow-btn sub-arrow-left" (click)="scrollSubTabs(humashScroll, 'left')" aria-label="עוד">›</button>
+        </div>
+      }
+      <!-- שורה 2: מועדים (רק כשמועדים פעיל) -->
+      @if (activeMobileTopTab === 'holidays') {
+        <div class="sub-tabs-wrapper">
+          <button class="sub-arrow-btn sub-arrow-right" (click)="scrollSubTabs(holidaysScroll, 'right')" aria-label="הקודם">‹</button>
+          <div class="mobile-sub-tabs" #holidaysScroll>
+            @for (item of menuGroups[1].items; track item.id) {
+              <button [class.active]="selectedCategory === item.id"
+                      (click)="selectCategory(item.id)">
+                {{ item.label[currentLang] }}
+              </button>
+            }
+          </div>
+          <button class="sub-arrow-btn sub-arrow-left" (click)="scrollSubTabs(holidaysScroll, 'left')" aria-label="עוד">›</button>
         </div>
       }
       <!-- שורה 2: קטגוריות מכתבים (רק כשמכתבים פעיל) -->
       @if (activeMobileTopTab === 'letters') {
-        <div class="mobile-sub-tabs">
-          @for (item of menuGroups[2].items; track item.id) {
-            <button [class.active]="selectedCategory === item.id"
-                    (click)="selectCategory(item.id)">
-              {{ item.label[currentLang] }}
-            </button>
-          }
+        <div class="sub-tabs-wrapper">
+          <button class="sub-arrow-btn sub-arrow-right" (click)="scrollSubTabs(lettersScroll, 'right')" aria-label="הקודם">‹</button>
+          <div class="mobile-sub-tabs" #lettersScroll>
+            @for (item of menuGroups[2].items; track item.id) {
+              <button [class.active]="selectedCategory === item.id"
+                      (click)="selectCategory(item.id)">
+                {{ item.label[currentLang] }}
+              </button>
+            }
+          </div>
+          <button class="sub-arrow-btn sub-arrow-left" (click)="scrollSubTabs(lettersScroll, 'left')" aria-label="עוד">›</button>
         </div>
       }
     </nav>
