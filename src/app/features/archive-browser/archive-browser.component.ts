@@ -8,6 +8,7 @@ import { LessonCardComponent } from '../../components/lesson-card/lesson-card.co
 
 // יצירת רשימה שטוחה אחת למיון - מחוץ למחלקה כדי למנוע שגיאות const
 const GLOBAL_ORDER = Object.values(DriveDataService.CATEGORIES_CONFIG).flat();
+const LETTER_SUBCATEGORIES = ['ברית מילה', 'ניחומים', 'ארגונים', 'קהילות', 'חגים', 'חנוכת הבית', 'מוסדות'];
 
 @Component({
   selector: 'app-archive-browser',
@@ -58,14 +59,21 @@ export class ArchiveBrowserComponent implements OnInit, OnChanges, OnDestroy {
       id: 'holidays',
       label: { he: 'חגים ומועדים', ru: 'Праздники' },
       items: [
-        { id: 'חגים ומועדים', label: { he: 'כל החגים', ru: 'Все праздники' } }
+        { id: 'חגים ומועדים', label: { he: 'מועדים', ru: 'Праздники' } }
       ]
     },
     {
       id: 'letters',
       label: { he: 'מכתבים', ru: 'Письма' },
       items: [
-        { id: 'מכתבים', label: { he: 'ארכיון מכתבים', ru: 'Архив писем' } }
+        { id: 'מכתבים-הכל',   label: { he: 'הכל',          ru: 'Все' } },
+        { id: 'ברית מילה',    label: { he: 'ברית מילה',    ru: 'Брит Мила' } },
+        { id: 'ניחומים',      label: { he: 'ניחומים',      ru: 'Соболезнования' } },
+        { id: 'ארגונים',      label: { he: 'ארגונים',      ru: 'Организации' } },
+        { id: 'קהילות',       label: { he: 'קהילות',       ru: 'Общины' } },
+        { id: 'חגים',         label: { he: 'חגים',         ru: 'Праздники' } },
+        { id: 'חנוכת הבית',   label: { he: 'חנוכת הבית',   ru: 'Новоселье' } },
+        { id: 'מוסדות',       label: { he: 'מוסדות',       ru: 'Учреждения' } },
       ]
     }
   ];
@@ -108,6 +116,27 @@ export class ArchiveBrowserComponent implements OnInit, OnChanges, OnDestroy {
     return id;
   }
 
+  get activeMobileTopTab(): 'humash' | 'holidays' | 'letters' {
+    if (this.selectedCategory === 'חגים ומועדים') return 'holidays';
+    if (this.selectedCategory === 'מכתבים-הכל' || (this.selectedCategory && LETTER_SUBCATEGORIES.includes(this.selectedCategory))) return 'letters';
+    return 'humash';
+  }
+
+  selectMobileTopTab(tab: 'humash' | 'holidays' | 'letters'): void {
+    if (tab === 'humash') {
+      const humashIds = ['בראשית', 'שמות', 'ויקרא', 'במדבר', 'דברים'];
+      if (!this.selectedCategory || !humashIds.includes(this.selectedCategory)) {
+        this.selectCategory('בראשית');
+      }
+    } else if (tab === 'holidays') {
+      this.selectCategory('חגים ומועדים');
+    } else {
+      if (this.selectedCategory !== 'מכתבים-הכל' && !LETTER_SUBCATEGORIES.includes(this.selectedCategory || '')) {
+        this.selectCategory('מכתבים-הכל');
+      }
+    }
+  }
+
   selectCategory(categoryId: string): void {
     this.selectedCategory = categoryId;
     this.filterLessons();
@@ -116,12 +145,14 @@ export class ArchiveBrowserComponent implements OnInit, OnChanges, OnDestroy {
   filterLessons(): void {
     const term = this.searchTerm.toLowerCase().trim();
 
-    if (this.selectedCategory === 'מכתבים') {
-      this.filteredLessons = term
-        ? this.allLetters.filter(l =>
-            l.title.toLowerCase().includes(term) || l.description.toLowerCase().includes(term)
-          )
-        : [...this.allLetters];
+    if (this.selectedCategory === 'מכתבים-הכל' || (this.selectedCategory && LETTER_SUBCATEGORIES.includes(this.selectedCategory))) {
+      const subCat = this.selectedCategory === 'מכתבים-הכל' ? null : this.selectedCategory!.toLowerCase();
+      this.filteredLessons = this.allLetters.filter(l => {
+        const title = l.title.toLowerCase();
+        const desc  = l.description.toLowerCase();
+        const matchesSub = !subCat || title.includes(subCat) || desc.includes(subCat);
+        return matchesSub && (!term || title.includes(term) || desc.includes(term));
+      });
       return;
     }
 

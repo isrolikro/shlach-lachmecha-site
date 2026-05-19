@@ -69,7 +69,7 @@ export class DriveDataService {
       reduce((allFiles: any[], res: any) => allFiles.concat(res.files || []), []),
       map((files: any[]) =>
         files
-          .filter((file) => file.name?.toLowerCase().endsWith('.pdf'))
+          .filter((file) => /\.(pdf|jpe?g)$/i.test(file.name || ''))
           .map((file) => this.parseLetterFile(file))
       )
     );
@@ -77,7 +77,7 @@ export class DriveDataService {
 
   private parseLetterFile(file: any): Lesson {
     const rawName = file.name || '';
-    const cleanName = rawName.replace(/\.pdf$/i, '').replace(/^\d+\s+/, '');
+    const cleanName = rawName.replace(/\.(pdf|jpe?g)$/i, '').replace(/^\d+\s+/, '');
     const yearMatch = rawName.match(/תשפ[א-ת_]+/) || rawName.match(/\d{4}/);
     const year = yearMatch ? yearMatch[0].replace('_', '"') : '';
 

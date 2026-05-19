@@ -171,8 +171,14 @@
   .lessons-grid { gap: 16px; }
 }
 
-/* ===== MOBILE ===== */
+/* ===== MOBILE NAV ===== */
+.mobile-nav { display: none; }
+.desktop-only { display: block; }
+
 @media (max-width: 768px) {
+  .desktop-only { display: none !important; }
+  .mobile-nav { display: block; }
+
   .archive-layout { flex-direction: column; }
 
   .sidebar {
@@ -185,38 +191,65 @@
     top: 0;
     z-index: 50;
     box-shadow: 0 3px 12px rgba(26,75,94,0.07);
+  }
 
-    .sidebar-header { display: none; }
-    .group-label { display: none; }
+  /* שורה 1 — פרשיות / מועדים / מכתבים */
+  .mobile-top-tabs {
+    display: flex;
+    width: 100%;
+    border-bottom: 1px solid #e8e0d0;
 
-    .sidebar-nav {
-      display: flex;
-      overflow-x: auto;
-      padding: 0 6px;
-      scrollbar-width: none;
-      &::-webkit-scrollbar { display: none; }
+    button {
+      flex: 1;
+      padding: 13px 6px;
+      background: none;
+      border: none;
+      border-bottom: 3px solid transparent;
+      font-family: 'Assistant', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #6a7d8e;
+      cursor: pointer;
+      transition: color 0.18s, border-color 0.18s;
+
+      &:hover { color: #1a4b5e; }
+
+      &.active {
+        color: #1a4b5e;
+        border-bottom-color: #d4af37;
+        font-weight: 800;
+      }
     }
+  }
 
-    .menu-group { margin-bottom: 0; display: contents; }
+  /* שורה 2 — 5 חומשים */
+  .mobile-sub-tabs {
+    display: flex;
+    overflow-x: auto;
+    scrollbar-width: none;
+    background: #f5f0e8;
+    &::-webkit-scrollbar { display: none; }
 
-    .group-items {
-      display: contents;
+    button {
+      flex-shrink: 0;
+      padding: 9px 14px;
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      font-family: 'Assistant', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #7a8e9a;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: color 0.18s, border-color 0.18s;
 
-      li {
-        white-space: nowrap;
-        padding: 13px 15px;
-        font-size: 0.88rem;
-        border-inline-start: none;
-        border-bottom: 3px solid transparent;
-        flex-shrink: 0;
+      &:hover { color: #1a4b5e; }
 
-        &:hover { background: transparent; }
-
-        &.active {
-          background: transparent;
-          border-bottom-color: #d4af37;
-          color: #1a4b5e;
-        }
+      &.active {
+        color: #1a4b5e;
+        border-bottom-color: #d4af37;
+        font-weight: 700;
       }
     }
   }

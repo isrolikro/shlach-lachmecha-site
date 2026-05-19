@@ -1,16 +1,17 @@
 <div class="archive-layout" [attr.dir]="currentLang === 'he' ? 'rtl' : 'ltr'">
   <aside class="sidebar" role="navigation">
-    <div class="sidebar-header">
+
+    <!-- Desktop sidebar -->
+    <div class="sidebar-header desktop-only">
       {{ ui[currentLang].menuTitle }}
     </div>
-    
-    <nav class="sidebar-nav">
+    <nav class="sidebar-nav desktop-only">
       @for (group of menuGroups; track group.id) {
         <div class="menu-group">
           <div class="group-label">{{ group.label[currentLang] }}</div>
           <ul class="group-items">
             @for (item of group.items; track item.id) {
-              <li 
+              <li
                 [class.active]="selectedCategory === item.id"
                 (click)="selectCategory(item.id)"
                 role="button"
@@ -22,6 +23,48 @@
         </div>
       }
     </nav>
+
+    <!-- Mobile nav — שתי שורות -->
+    <nav class="mobile-nav" aria-label="ניווט ראשי">
+      <!-- שורה 1: 3 טאבים ראשיים -->
+      <div class="mobile-top-tabs">
+        <button [class.active]="activeMobileTopTab === 'humash'"
+                (click)="selectMobileTopTab('humash')">
+          {{ currentLang === 'he' ? 'פרשיות' : 'Главы' }}
+        </button>
+        <button [class.active]="activeMobileTopTab === 'holidays'"
+                (click)="selectMobileTopTab('holidays')">
+          {{ currentLang === 'he' ? 'מועדים' : 'Праздники' }}
+        </button>
+        <button [class.active]="activeMobileTopTab === 'letters'"
+                (click)="selectMobileTopTab('letters')">
+          {{ currentLang === 'he' ? 'מכתבים' : 'Письма' }}
+        </button>
+      </div>
+      <!-- שורה 2: 5 חומשים (רק כשפרשיות פעיל) -->
+      @if (activeMobileTopTab === 'humash') {
+        <div class="mobile-sub-tabs">
+          @for (item of menuGroups[0].items; track item.id) {
+            <button [class.active]="selectedCategory === item.id"
+                    (click)="selectCategory(item.id)">
+              {{ item.label[currentLang] }}
+            </button>
+          }
+        </div>
+      }
+      <!-- שורה 2: קטגוריות מכתבים (רק כשמכתבים פעיל) -->
+      @if (activeMobileTopTab === 'letters') {
+        <div class="mobile-sub-tabs">
+          @for (item of menuGroups[2].items; track item.id) {
+            <button [class.active]="selectedCategory === item.id"
+                    (click)="selectCategory(item.id)">
+              {{ item.label[currentLang] }}
+            </button>
+          }
+        </div>
+      }
+    </nav>
+
   </aside>
 
   <main class="main-content">
