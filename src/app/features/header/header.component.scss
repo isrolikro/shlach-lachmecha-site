@@ -73,6 +73,8 @@
     &.scrolled {
       box-shadow: 0 4px 20px rgba(0,0,0,0.25);
 
+      .top-bar { display: none; }
+
       .header-banner { padding: 8px 0; }
 
       .banner-grid {
@@ -149,7 +151,7 @@
 .header-banner {
   position: relative;
   color: var(--white);
-  padding: 44px 0 38px;
+  padding: 6px 0 14px;
   overflow: hidden;
 
   background: transparent;
@@ -327,7 +329,7 @@
 @media (max-width: 768px) {
 
   .header-banner {
-    padding: 32px 0 28px;
+    padding: 2px 0 20px;
     overflow: visible; /* מאפשר ל-search לצאת מהבאנר לכיוון top-bar */
 
     .banner-grid {

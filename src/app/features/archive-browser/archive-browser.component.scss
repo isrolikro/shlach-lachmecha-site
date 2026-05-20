@@ -11,6 +11,10 @@
   background: linear-gradient(180deg, #fffdf8 0%, #fdf8ef 100%);
   border-inline-end: 1px solid #e2d9c8;
   padding-top: 16px;
+  position: sticky;
+  top: 80px; /* גובה ה-header המכווץ בדסקטופ */
+  height: calc(100vh - 80px);
+  overflow-y: auto;
 
   .sidebar-header {
     padding: 12px 20px 10px;
@@ -220,8 +224,10 @@
     padding-top: 0;
     background: #fffdf8;
     position: sticky;
-    top: 82px; /* גובה ה-header המכווץ במובייל */
+    top: 60px; /* גובה ה-header המכווץ במובייל (ללא top-bar) */
     z-index: 50;
+    height: auto;
+    overflow-y: visible;
     box-shadow: 0 3px 12px rgba(26,75,94,0.07);
   }
 

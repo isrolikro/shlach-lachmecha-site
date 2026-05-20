@@ -44,18 +44,18 @@
 
 /* spacer מפצה על ה-header ה-fixed */
 .header-spacer {
-  height: 420px;
+  height: 388px;
   transition: height 0.35s ease;
 
-  &.compact { height: 93px; }
+  &.compact { height: 60px; }
 
   @media (max-width: 480px) {
-    height: 370px;
-    &.compact { height: 93px; }
+    height: 338px;
+    &.compact { height: 60px; }
   }
 
   @media (min-width: 769px) {
-    height: 325px;
+    height: 262px;
     &.compact { height: 80px; }
   }
 }
