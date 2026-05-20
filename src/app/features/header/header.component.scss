@@ -264,15 +264,15 @@
 
   .logo-area {
     order: -1;
-    .logo { height: 140px; }
+    .logo { height: 165px; }
   }
 
   .titles-section {
     order: 0;
     padding: 0 12px;
 
-    .main-title { font-size: clamp(34px, 9vw, 52px); }
-    .sub-title { font-size: clamp(17px, 4.2vw, 22px); }
+    .main-title { font-size: clamp(40px, 11vw, 62px); }
+    .sub-title { font-size: clamp(19px, 5vw, 25px); }
 
     .decorator { display: none; }
     .extra-title { display: none; }
@@ -328,7 +328,7 @@
 }
 
 @media (max-width: 480px) {
-  .logo-area .logo { height: 115px; }
-  .titles-section .main-title { font-size: clamp(30px, 8vw, 40px); }
-  .titles-section .sub-title { font-size: clamp(15px, 4vw, 19px); }
+  .logo-area .logo { height: 135px; }
+  .titles-section .main-title { font-size: clamp(36px, 10vw, 48px); }
+  .titles-section .sub-title { font-size: clamp(17px, 4.5vw, 22px); }
 }
