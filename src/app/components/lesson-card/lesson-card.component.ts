@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, HostListener, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Lesson } from '../../models/lesson.model';
 
@@ -14,6 +14,15 @@ export class LessonCardComponent {
   @Input() currentLang: 'he' | 'ru' = 'he';
 
   isExpanded = false;
+
+  constructor(private el: ElementRef) {}
+
+  @HostListener('document:click', ['$event.target'])
+  onClickOutside(target: EventTarget | null) {
+    if (this.isExpanded && !this.el.nativeElement.contains(target)) {
+      this.isExpanded = false;
+    }
+  }
 
   // --- מנגנון פיצול שם הקובץ (הכותרת) ---
   get displayTitle(): string {

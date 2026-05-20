@@ -220,7 +220,7 @@
     padding-top: 0;
     background: #fffdf8;
     position: sticky;
-    top: 0;
+    top: 82px; /* גובה ה-header המכווץ במובייל */
     z-index: 50;
     box-shadow: 0 3px 12px rgba(26,75,94,0.07);
   }

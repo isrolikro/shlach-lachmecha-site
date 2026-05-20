@@ -35,6 +35,14 @@ translations: any = {
   currentLang = 'he';
   t = this.translations['he'];
   isSearchOpen = false;
+  isScrolled = false;
+
+  @HostListener('window:scroll')
+  onWindowScroll() {
+    const y = window.scrollY;
+    if (!this.isScrolled && y > 80) this.isScrolled = true;
+    if (this.isScrolled && y < 30) this.isScrolled = false;
+  }
 
   constructor(private langService: LanguageService) {
     this.langService.currentLang$.subscribe(lang => {

@@ -1,3 +1,64 @@
+/* ===== SCROLL TO TOP ===== */
+.scroll-to-top {
+  position: fixed;
+  bottom: 32px;
+  left: 32px;
+  z-index: 999;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 2px solid rgba(212, 175, 55, 0.6);
+  background: linear-gradient(160deg, #122f3c 0%, #1a4b5e 100%);
+  color: #d4af37;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 18px rgba(26, 75, 94, 0.35);
+  opacity: 0;
+  transform: translateY(16px);
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease, border-color 0.2s;
+
+  &.visible {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  &:hover {
+    border-color: #d4af37;
+    box-shadow: 0 6px 24px rgba(212, 175, 55, 0.3);
+  }
+}
+
+@media (max-width: 768px) {
+  .scroll-to-top {
+    bottom: 20px;
+    left: 16px;
+    width: 42px;
+    height: 42px;
+  }
+}
+
+/* spacer מפצה על ה-header ה-fixed */
+.header-spacer {
+  height: 420px;
+  transition: height 0.35s ease;
+
+  &.compact { height: 93px; }
+
+  @media (max-width: 480px) {
+    height: 370px;
+    &.compact { height: 93px; }
+  }
+
+  @media (min-width: 769px) {
+    height: 325px;
+    &.compact { height: 80px; }
+  }
+}
+
 .content-wrapper {
   min-height: calc(100vh - 280px);
 

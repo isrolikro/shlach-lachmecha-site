@@ -4,6 +4,106 @@
   --white: #ffffff;
   font-family: 'Assistant', sans-serif;
   * { box-sizing: border-box; }
+  background: linear-gradient(160deg, #122f3c 0%, #1a4b5e 45%, #205c75 100%);
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      repeating-linear-gradient(
+        45deg,
+        rgba(255,255,255,0.025) 0px,
+        rgba(255,255,255,0.025) 1px,
+        transparent 1px,
+        transparent 32px
+      ),
+      repeating-linear-gradient(
+        -45deg,
+        rgba(255,255,255,0.015) 0px,
+        rgba(255,255,255,0.015) 1px,
+        transparent 1px,
+        transparent 32px
+      );
+    pointer-events: none;
+    z-index: 0;
+  }
+}
+
+/* ===== FIXED HEADER (כל המסכים) ===== */
+.main-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  transition: box-shadow 0.3s ease;
+}
+
+/* ===== SCROLLED — דסקטופ ===== */
+@media (min-width: 769px) {
+  .main-header {
+    .top-bar, .header-banner, .logo,
+    .main-title, .sub-title, .decorator,
+    .extra-title, .banner-grid {
+      transition: all 0.35s ease;
+    }
+
+    &.scrolled {
+      box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+      .top-bar { display: none; }
+      .header-banner { padding: 10px 0; }
+      .logo { height: 52px !important; }
+      .main-title { font-size: 26px !important; }
+      .sub-title { display: none; }
+      .decorator { display: none; }
+      .extra-title { display: none; }
+      .banner-grid { gap: 12px; }
+    }
+  }
+}
+
+/* ===== SCROLLED — מובייל ===== */
+@media (max-width: 768px) {
+  .main-header {
+    .header-banner, .logo, .main-title, .sub-title {
+      transition: all 0.35s ease;
+    }
+
+    &.scrolled {
+      box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+
+      .header-banner { padding: 8px 0; }
+
+      .banner-grid {
+        grid-template-columns: auto 1fr auto;
+        text-align: right;
+        gap: 10px;
+      }
+
+      .logo-area {
+        order: unset;
+        .logo { height: 44px !important; }
+      }
+
+      .titles-section {
+        order: unset;
+        text-align: center;
+        padding: 0 8px;
+        .main-title { font-size: 18px !important; }
+        .sub-title { display: none; }
+        .decorator { display: none; }
+        .extra-title { display: none; }
+      }
+
+      .search-area {
+        position: static;
+        height: auto;
+        display: flex;
+        align-items: center;
+      }
+    }
+  }
 }
 
 .container {
@@ -14,10 +114,11 @@
 
 /* ===== TOP BAR ===== */
 .top-bar {
-  background-color: #122f3c;
+  background: transparent;
   padding: 7px 0;
   direction: rtl !important;
   position: relative;
+  z-index: 1;
 
   .container {
     display: flex;
@@ -51,32 +152,7 @@
   padding: 44px 0 38px;
   overflow: hidden;
 
-  /* שכבת גרדיאנט */
-  background:
-    linear-gradient(160deg, #122f3c 0%, #1a4b5e 45%, #205c75 100%);
-
-  /* תבנית גיאומטרית עדינה מעל */
-  &::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-image:
-      repeating-linear-gradient(
-        45deg,
-        rgba(255,255,255,0.025) 0px,
-        rgba(255,255,255,0.025) 1px,
-        transparent 1px,
-        transparent 32px
-      ),
-      repeating-linear-gradient(
-        -45deg,
-        rgba(255,255,255,0.015) 0px,
-        rgba(255,255,255,0.015) 1px,
-        transparent 1px,
-        transparent 32px
-      );
-    pointer-events: none;
-  }
+  background: transparent;
 
   /* קו זהב תחתון עם זוהר */
   &::after {
@@ -249,7 +325,6 @@
 
 /* ===== MOBILE ===== */
 @media (max-width: 768px) {
-  .main-header { position: relative; }
 
   .header-banner {
     padding: 32px 0 28px;
@@ -278,10 +353,10 @@
     .extra-title { display: none; }
   }
 
-  /* הוצאת כפתור החיפוש מהבאנר לשורת top-bar */
+  /* חיפוש בשורת top-bar */
   .search-area {
     position: absolute;
-    top: 0; /* מתחיל מראש ה-main-header = שורת ה-top-bar */
+    top: 0;
     z-index: 200;
     display: flex;
     align-items: center;

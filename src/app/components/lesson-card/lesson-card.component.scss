@@ -5,7 +5,7 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  min-height: 230px;
+  min-height: 265px;
   border: 1px solid #e8e0d0;
   transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
   position: relative;
@@ -113,6 +113,64 @@
     }
   }
 
+  /* --- פאנל מרחף (דסקטופ בלבד) --- */
+  .expanded-panel {
+    display: none;
+    position: absolute;
+    inset: 0;
+    z-index: 50;
+    background: linear-gradient(160deg, #fffdf8 0%, #fdf8ef 100%);
+    border-radius: 14px;
+    border: 1px solid #c8d8e0;
+    box-shadow: 0 12px 36px rgba(26, 75, 94, 0.22);
+    padding: 16px 20px 14px;
+    overflow-y: auto;
+    flex-direction: column;
+    gap: 10px;
+
+    p {
+      font-size: 0.88rem;
+      color: #55697a;
+      line-height: 1.65;
+      margin: 0;
+      white-space: pre-wrap;
+      flex: 1;
+    }
+
+    .toggle-expand-btn {
+      background: none;
+      border: none;
+      color: #b08a20;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 7px;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-family: inherit;
+      transition: color 0.2s;
+
+      &:hover { color: #d4af37; }
+
+      .arrow {
+        font-size: 0.6rem;
+        transition: transform 0.3s;
+        &.rotated { transform: rotate(180deg); }
+      }
+    }
+
+    .panel-footer {
+      display: flex;
+      align-items: stretch;
+      border-top: 1px solid #ede5d8;
+      margin-top: auto;
+      padding-top: 10px;
+      gap: 0;
+    }
+  }
+
   /* --- Footer --- */
   .card-footer {
     display: flex;
@@ -159,7 +217,20 @@
   }
 }
 
-/* פלפון */
+/* דסקטופ — פאנל מרחף במקום הרחבה אינליין */
+@media (min-width: 769px) {
+  .lesson-card {
+    .expanded-panel { display: flex; }
+
+    /* מניעים את הרחבת הטקסט האינליין — הפאנל מטפל בזה */
+    .card-body .toc-content.expanded {
+      display: -webkit-box;
+      overflow: hidden;
+    }
+  }
+}
+
+/* פלפון — הרחבה אינליין, ללא פאנל */
 @media (max-width: 768px) {
   .lesson-card {
     min-height: 185px;
@@ -168,5 +239,6 @@
     .lesson-title { font-size: 0.93rem; }
     .card-body .toc-content { font-size: 0.83rem; }
     .nav-link { font-size: 0.76rem; }
+    .expanded-panel { display: none !important; }
   }
 }
