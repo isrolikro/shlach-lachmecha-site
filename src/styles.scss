@@ -4,6 +4,22 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700;800&family=Heebo:wght@300;400;700;800&family=Frank+Ruhl+Libre:wght@400;700;900&display=swap');
 
+@font-face {
+  font-family: 'Vilna';
+  src: url('https://cdn.jsdelivr.net/gh/aharonium/fonts@master/Fonts/Hebrew%20Letters%20with%20Vowels%20%28no%20cantillation%29/Mekorot%20%28LPPL%29/Vilna/Mekorot-Vilna.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Vilna';
+  src: url('https://cdn.jsdelivr.net/gh/aharonium/fonts@master/Fonts/Hebrew%20Letters%20with%20Vowels%20%28no%20cantillation%29/Mekorot%20%28LPPL%29/Vilna/Mekorot-Vilna-Bold.ttf') format('truetype');
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --primary:      #1a4b5e;
   --primary-dark: #122f3c;
