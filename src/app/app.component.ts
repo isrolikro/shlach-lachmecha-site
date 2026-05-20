@@ -21,7 +21,7 @@ export class AppComponent {
   @HostListener('window:scroll')
   onScroll() {
     const y = window.scrollY;
-    this.showScrollTop = y > 300;
+    this.showScrollTop = y > 150;
 
     if (!this.isHeaderCompact && y > 80) this.isHeaderCompact = true;
     if (this.isHeaderCompact && y < 30) this.isHeaderCompact = false;

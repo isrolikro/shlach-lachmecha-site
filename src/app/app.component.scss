@@ -8,7 +8,8 @@
   height: 48px;
   border-radius: 50%;
   border: 2px solid rgba(212, 175, 55, 0.6);
-  background: linear-gradient(160deg, #122f3c 0%, #1a4b5e 100%);
+  background: linear-gradient(160deg, rgba(18,47,60,0.82) 0%, rgba(26,75,94,0.82) 100%);
+  backdrop-filter: blur(6px);
   color: #d4af37;
   display: flex;
   align-items: center;
