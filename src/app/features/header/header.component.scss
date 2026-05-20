@@ -252,24 +252,30 @@
   .main-header { position: relative; }
 
   .header-banner {
-    padding: 22px 0 20px;
+    padding: 32px 0 28px;
     overflow: visible; /* מאפשר ל-search לצאת מהבאנר לכיוון top-bar */
 
     .banner-grid {
       grid-template-columns: 1fr;
       text-align: center;
-      gap: 10px;
+      gap: 16px;
     }
   }
 
   .logo-area {
     order: -1;
-    .logo { height: 72px; }
+    .logo { height: 115px; }
   }
 
   .titles-section {
     order: 0;
     padding: 0 12px;
+
+    .main-title { font-size: clamp(28px, 7vw, 42px); }
+    .sub-title { font-size: clamp(15px, 3.5vw, 18px); }
+
+    .decorator { display: none; }
+    .extra-title { display: none; }
   }
 
   /* הוצאת כפתור החיפוש מהבאנר לשורת top-bar */
@@ -322,6 +328,6 @@
 }
 
 @media (max-width: 480px) {
-  .logo-area .logo { height: 56px; }
-  .titles-section .main-title { font-size: 26px; }
+  .logo-area .logo { height: 95px; }
+  .titles-section .main-title { font-size: clamp(24px, 6vw, 32px); }
 }

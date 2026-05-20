@@ -16,7 +16,7 @@ export class HeaderComponent {
 translations: any = {
     he: {
       title: 'שלח לחמך',
-      subTitle: 'שיעורי מורנו הרב הראשי לרוסיא <br /> רבי <b>בערל לאזאר</b> שליט"א',
+      subTitle: 'שיעורי מורנו הרב הראשי לרוסיא <br /> הגאון רבי  <b>בערל לאזאר</b> שליט"א',
       extraTitle: 'על סדר הפרשיות והמועדים',
       searchPlaceholder: 'חפש פרשה, חג או נושא...',
       dir: 'rtl'
