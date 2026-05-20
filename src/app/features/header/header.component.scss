@@ -113,7 +113,7 @@
   a { display: flex; line-height: 0; }
 
   .logo {
-    height: 135px;
+    height: 170px;
     width: auto;
     border-radius: 50%;
     filter: drop-shadow(0 4px 14px rgba(0,0,0,0.4));
@@ -132,7 +132,7 @@
 
   .main-title {
     color: var(--gold-color);
-    font-size: clamp(32px, 4.8vw, 64px);
+    font-size: clamp(40px, 5.8vw, 76px);
     margin: 0 0 6px;
     font-weight: 900;
     font-family: 'Frank Ruhl Libre', 'Assistant', serif;
@@ -142,7 +142,7 @@
   }
 
   .sub-title {
-    font-size: clamp(14px, 1.8vw, 19px);
+    font-size: clamp(16px, 2.2vw, 23px);
     margin: 6px 0;
     opacity: 0.88;
     line-height: 1.55;

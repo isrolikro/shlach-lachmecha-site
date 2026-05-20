@@ -14,7 +14,7 @@ export class DriveDataService {
     'ויקרא': ['ויקרא', 'צו', 'שמיני', 'תזריע', 'מצורע', 'אחרי מות', 'קדושים', 'אמור', 'בהר', 'בחוקותי'],
     'במדבר': ['במדבר', 'נשא', 'בהעלותך', 'שלח', 'קרח', 'חקת', 'בלק', 'פנחס', 'מטות', 'מסעי'],
     'דברים': ['דברים', 'ואתחנן', 'עקב', 'ראה', 'שופטים', 'כי תצא', 'כי תבוא', 'נצבים', 'וילך', 'האזינו', 'וזאת הברכה'],
-    'חגים ומועדים': ['ראש השנה', 'יום כיפור', 'סוכות', 'שמיני עצרת', 'שמחת תורה','יט כסלו', 'לג בעומר', 'חנוכה', 'פורים', 'פסח', 'שבועות', 'שלושת השבועות', 'תשעה באב', 'אלול', 'חודש תשרי']
+    'חגים ומועדים': ['ראש השנה', 'יום כיפור', 'סוכות', 'שמיני עצרת', 'שמחת תורה','י"ט כסלו', 'ל"ג בעומר', 'חנוכה', 'פורים', 'פסח', 'שבועות', 'שלושת השבועות', 'תשעה באב', 'אלול', 'חודש תשרי']
   };
 
   private readonly ALL_PARASHOT_ORDER = Object.values(DriveDataService.CATEGORIES_CONFIG).flat();
@@ -102,8 +102,11 @@ export class DriveDataService {
     const yearMatch = rawName.match(/תשפ[א-ת_]+/) || rawName.match(/\d{4}/);
     const year = yearMatch ? yearMatch[0].replace('_', '"') : 'תשפ"ו';
 
-    // התיקון הקריטי: מחפשים איזה שם פרשה מהרשימה "מוכל" בתוך שם הקובץ
-    const foundParasha = this.ALL_PARASHOT_ORDER.find(p => cleanName.includes(p)) || 'כללי';
+    // מחפשים איזה שם פרשה מהרשימה "מוכל" בתוך שם הקובץ, עם נרמול גרשיים
+    const normalize = (s: string) => s.replace(/["״]/g, '');
+    const foundParasha = this.ALL_PARASHOT_ORDER.find(p =>
+      cleanName.includes(p) || normalize(cleanName).includes(normalize(p))
+    ) || 'כללי';
 
     // במידה ומדובר בדו-לשוני
     if (cleanName.includes('|')) {
