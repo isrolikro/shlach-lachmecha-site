@@ -260,15 +260,16 @@ export class ArchiveBrowserComponent implements OnInit, OnChanges, OnDestroy {
   filterLessons(): void {
     const term = this.searchTerm.toLowerCase().trim();
 
-    // נוספו לאחרונה — 2 שיעורים קודם, אחר כך 2 מכתבים
+    // נוספו לאחרונה — שיעורים קודם, מכתבים אחר כך (3 בדסקטופ, 2 במובייל)
     if (this.selectedCategory === 'recent') {
+      const count = window.innerWidth <= 768 ? 2 : 3;
       const recentLessons = [...this.allLessons]
         .sort((a, b) => (b.createdTime || '').localeCompare(a.createdTime || ''))
-        .slice(0, 2);
+        .slice(0, count);
       const recentLetters = [...this.allLetters]
         .sort((a, b) => (b.createdTime || '').localeCompare(a.createdTime || ''))
-        .slice(0, 2);
-      this.filteredLessons = [...recentLessons, ...recentLetters]; // שיעורים קודם, מכתבים אחר כך
+        .slice(0, count);
+      this.filteredLessons = [...recentLessons, ...recentLetters];
       return;
     }
 
