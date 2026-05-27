@@ -49,6 +49,12 @@ export class ArchiveBrowserComponent implements OnInit, OnChanges, OnDestroy {
 
   menuGroups: any[] = [
     {
+      id: 'recent',
+      flat: true,  // פריט ישיר — ללא תת-תפריט
+      label: { he: 'נוספו לאחרונה', ru: 'Недавно добавленные' },
+      items: []
+    },
+    {
       id: 'humash',
       label: { he: 'חומשים', ru: 'Пятикнижие' },
       items: [
@@ -176,13 +182,15 @@ export class ArchiveBrowserComponent implements OnInit, OnChanges, OnDestroy {
   getCategoryLabel(id: string | null): string {
     if (!id) return '';
     for (const group of this.menuGroups) {
-      const item = group.items.find((i: any) => i.id === id);
+      if (group.flat && group.id === id) return group.label[this.currentLang];
+      const item = group.items?.find((i: any) => i.id === id);
       if (item) return item.label[this.currentLang];
     }
     return id;
   }
 
-  get activeMobileTopTab(): 'humash' | 'holidays' | 'letters' {
+  get activeMobileTopTab(): 'humash' | 'holidays' | 'letters' | 'recent' {
+    if (this.selectedCategory === 'recent') return 'recent';
     if (
       this.selectedCategory === 'חגים-הכל' ||
       (this.selectedCategory && HOLIDAY_SUBCATEGORIES.includes(this.selectedCategory))
@@ -202,8 +210,10 @@ export class ArchiveBrowserComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  selectMobileTopTab(tab: 'humash' | 'holidays' | 'letters'): void {
-    if (tab === 'humash') {
+  selectMobileTopTab(tab: 'humash' | 'holidays' | 'letters' | 'recent'): void {
+    if (tab === 'recent') {
+      this.selectCategory('recent');
+    } else if (tab === 'humash') {
       const humashIds = ['בראשית', 'שמות', 'ויקרא', 'במדבר', 'דברים'];
       if (!this.selectedCategory || !humashIds.includes(this.selectedCategory)) {
         this.selectCategory('בראשית');
@@ -232,6 +242,19 @@ export class ArchiveBrowserComponent implements OnInit, OnChanges, OnDestroy {
 
   filterLessons(): void {
     const term = this.searchTerm.toLowerCase().trim();
+
+    // נוספו לאחרונה — 2 שיעורים + 2 מכתבים אחרונים
+    if (this.selectedCategory === 'recent') {
+      const recentLessons = [...this.allLessons]
+        .sort((a, b) => (b.createdTime || '').localeCompare(a.createdTime || ''))
+        .slice(0, 2);
+      const recentLetters = [...this.allLetters]
+        .sort((a, b) => (b.createdTime || '').localeCompare(a.createdTime || ''))
+        .slice(0, 2);
+      this.filteredLessons = [...recentLessons, ...recentLetters]
+        .sort((a, b) => (b.createdTime || '').localeCompare(a.createdTime || ''));
+      return;
+    }
 
     // הכל במועדים
     if (this.selectedCategory === 'חגים-הכל') {

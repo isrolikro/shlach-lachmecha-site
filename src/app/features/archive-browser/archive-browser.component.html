@@ -8,22 +8,32 @@
     <nav class="sidebar-nav desktop-only">
       @for (group of menuGroups; track group.id) {
         <div class="menu-group">
-          <button class="group-toggle" (click)="toggleGroup(group.id)">
-            <span>{{ group.label[currentLang] }}</span>
-            <span class="chevron" [class.open]="expandedGroups.has(group.id)">‹</span>
-          </button>
-          @if (expandedGroups.has(group.id)) {
-            <ul class="group-items">
-              @for (item of group.items; track item.id) {
-                <li
-                  [class.active]="selectedCategory === item.id"
-                  (click)="selectCategory(item.id)"
-                  role="button"
-                  tabindex="0">
-                  {{ item.label[currentLang] }}
-                </li>
-              }
-            </ul>
+          @if (group.flat) {
+            <!-- פריט ישיר ללא תת-תפריט -->
+            <button class="flat-menu-item"
+                    [class.active]="selectedCategory === group.id"
+                    (click)="selectCategory(group.id)">
+              <span class="new-badge">✦</span>
+              {{ group.label[currentLang] }}
+            </button>
+          } @else {
+            <button class="group-toggle" (click)="toggleGroup(group.id)">
+              <span>{{ group.label[currentLang] }}</span>
+              <span class="chevron" [class.open]="expandedGroups.has(group.id)">‹</span>
+            </button>
+            @if (expandedGroups.has(group.id)) {
+              <ul class="group-items">
+                @for (item of group.items; track item.id) {
+                  <li
+                    [class.active]="selectedCategory === item.id"
+                    (click)="selectCategory(item.id)"
+                    role="button"
+                    tabindex="0">
+                    {{ item.label[currentLang] }}
+                  </li>
+                }
+              </ul>
+            }
           }
         </div>
       }
@@ -31,8 +41,12 @@
 
     <!-- Mobile nav — שתי שורות -->
     <nav class="mobile-nav" aria-label="ניווט ראשי">
-      <!-- שורה 1: 3 טאבים ראשיים -->
+      <!-- שורה 1: 4 טאבים ראשיים -->
       <div class="mobile-top-tabs">
+        <button [class.active]="activeMobileTopTab === 'recent'"
+                (click)="selectMobileTopTab('recent')">
+          {{ currentLang === 'he' ? 'חדשים' : 'Новые' }}
+        </button>
         <button [class.active]="activeMobileTopTab === 'humash'"
                 (click)="selectMobileTopTab('humash')">
           {{ currentLang === 'he' ? 'פרשיות' : 'Главы' }}

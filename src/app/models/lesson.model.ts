@@ -10,4 +10,5 @@ export interface Lesson {
   description: string;
   descriptionRu?: string;
   letterCategory?: string; // שם תת-התיקייה במכתבים
+  createdTime?: string;    // תאריך יצירה בגוגל דרייב (ISO)
 }

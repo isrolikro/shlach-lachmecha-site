@@ -37,6 +37,34 @@
     }
   }
 
+  /* ===== פריט ישיר (נוספו לאחרונה) ===== */
+  .flat-menu-item {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px 12px 16px;
+    background: none;
+    border: none;
+    border-bottom: 1px solid #e8e0d0;
+    font-family: 'Assistant', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #1a4b5e;
+    cursor: pointer;
+    transition: background 0.18s;
+    text-align: right;
+
+    &:hover { background: #fdf5e8; }
+
+    &.active {
+      background: linear-gradient(90deg, #eaf2f6, #f5fbfd);
+      border-inline-start: 3px solid #d4af37;
+    }
+
+    .new-badge { color: #d4af37; font-size: 0.8rem; }
+  }
+
   .menu-group {
     margin-bottom: 6px;
 

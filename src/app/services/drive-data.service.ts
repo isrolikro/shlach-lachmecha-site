@@ -33,7 +33,7 @@ export class DriveDataService {
 
   getLessons(): Observable<Lesson[]> {
     const query = `'${this.FOLDER_ID}' in parents and trashed = false`;
-    const fields = 'nextPageToken,files(id,name,webContentLink,description)';
+    const fields = 'nextPageToken,files(id,name,webContentLink,description,createdTime)';
     const baseUrl = `${this.API_URL}?q=${encodeURIComponent(query)}&key=${this.API_KEY}&fields=${encodeURIComponent(fields)}&pageSize=1000`;
 
     return this.http.get<any>(baseUrl).pipe(
@@ -77,7 +77,7 @@ export class DriveDataService {
   /** מחזיר את הקבצים (PDF/תמונה) מתוך תיקייה ספציפית */
   getFilesInFolder(folderId: string): Observable<Lesson[]> {
     const query = `'${folderId}' in parents and trashed = false`;
-    const fields = 'nextPageToken,files(id,name,webContentLink,description)';
+    const fields = 'nextPageToken,files(id,name,webContentLink,description,createdTime)';
     const baseUrl = `${this.API_URL}?q=${encodeURIComponent(query)}&key=${this.API_KEY}&fields=${encodeURIComponent(fields)}&pageSize=1000`;
 
     return this.http.get<any>(baseUrl).pipe(
@@ -110,6 +110,7 @@ export class DriveDataService {
       language: 'HE',
       pdfUrl: file.webContentLink,
       description: file.description || '',
+      createdTime: file.createdTime || '',
     };
   }
 
@@ -152,6 +153,7 @@ export class DriveDataService {
       language: rawName.includes('RU') ? 'RU' : 'HE',
       pdfUrl: file.webContentLink,
       description: file.description || '',
+      createdTime: file.createdTime || '',
     };
   }
 
