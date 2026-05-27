@@ -35,17 +35,30 @@ export class ArchiveBrowserComponent implements OnInit, OnChanges, OnDestroy {
   ui: any = {
     he: {
       menuTitle: 'תפריט שיעורים',
-      found: 'שיעורים נמצאו',
-      empty: 'לא נמצאו שיעורים בקטגוריה זו',
+      foundLessons: 'שיעורים נמצאו',
+      foundLetters: 'מכתבים נמצאו',
+      foundResults: 'תוצאות',
+      empty: 'לא נמצאו פריטים בקטגוריה זו',
       searchResults: 'תוצאות חיפוש'
     },
     ru: {
       menuTitle: 'Меню архива',
-      found: 'уроков найдено',
-      empty: 'Уроки не найдены',
+      foundLessons: 'уроков найдено',
+      foundLetters: 'писем найдено',
+      foundResults: 'результатов',
+      empty: 'Ничего не найдено',
       searchResults: 'Результаты поиска'
     }
   };
+
+  get foundLabel(): string {
+    if (this.selectedCategory === 'recent') return this.ui[this.currentLang].foundResults;
+    if (
+      this.selectedCategory === 'מכתבים-הכל' ||
+      (this.selectedCategory && this.letterSubcategoryNames.includes(this.selectedCategory))
+    ) return this.ui[this.currentLang].foundLetters;
+    return this.ui[this.currentLang].foundLessons;
+  }
 
   menuGroups: any[] = [
     {
