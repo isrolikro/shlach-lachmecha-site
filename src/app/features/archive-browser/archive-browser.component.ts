@@ -107,6 +107,19 @@ export class ArchiveBrowserComponent implements OnInit, OnChanges, OnDestroy {
       next: (lessons) => {
         this.allLessons = lessons;
         this.isLoading = false;
+
+        // הסרת חומשים ריקים מהתפריט
+        const humashimWithLessons = new Set(lessons.map(l => l.humash));
+        this.menuGroups[0].items = this.menuGroups[0].items.filter(
+          (item: any) => humashimWithLessons.has(item.id)
+        );
+
+        // הסרת מועדים ריקים מהתפריט
+        const parashotWithLessons = new Set(lessons.map(l => l.parasha));
+        this.menuGroups[1].items = this.menuGroups[1].items.filter(
+          (item: any) => item.id === 'חגים-הכל' || parashotWithLessons.has(item.id)
+        );
+
         this.filterLessons();
       },
       error: (err) => {
