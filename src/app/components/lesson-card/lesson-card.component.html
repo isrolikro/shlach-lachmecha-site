@@ -1,6 +1,11 @@
 <div class="lesson-card" [attr.lang]="currentLang">
   <div class="card-header">
-    <span class="year-badge" *ngIf="lesson.year">{{ lesson.year }}</span>
+    <div class="badges-row">
+      <span class="year-badge" *ngIf="lesson.year">{{ lesson.year }}</span>
+      <span class="date-badge" *ngIf="showDate && lesson.createdTime">
+        {{ currentLang === 'he' ? 'הועלה' : 'Добавлено' }}: {{ formattedDate }}
+      </span>
+    </div>
     <h3 class="lesson-title">{{ displayTitle }}</h3>
     <div class="card-body" *ngIf="displayContent">
       <p class="toc-content" [class.expanded]="isExpanded" [innerHTML]="displayContent"></p>

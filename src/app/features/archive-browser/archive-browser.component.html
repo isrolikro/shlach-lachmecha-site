@@ -131,7 +131,8 @@
         @for (lesson of filteredLessons; track lesson.id) {
           <app-lesson-card
             [lesson]="lesson"
-            [currentLang]="currentLang">
+            [currentLang]="currentLang"
+            [showDate]="selectedCategory === 'recent'">
           </app-lesson-card>
         }
       </div>

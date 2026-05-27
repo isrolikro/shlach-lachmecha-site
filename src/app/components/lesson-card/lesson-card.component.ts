@@ -12,6 +12,16 @@ import { Lesson } from '../../models/lesson.model';
 export class LessonCardComponent {
   @Input() lesson!: Lesson;
   @Input() currentLang: 'he' | 'ru' = 'he';
+  @Input() showDate: boolean = false;
+
+  get formattedDate(): string {
+    if (!this.lesson?.createdTime) return '';
+    const d = new Date(this.lesson.createdTime);
+    const day   = d.getDate().toString().padStart(2, '0');
+    const month = (d.getMonth() + 1).toString().padStart(2, '0');
+    const year  = d.getFullYear();
+    return `${day}/${month}/${year}`;
+  }
 
   isExpanded = false;
 

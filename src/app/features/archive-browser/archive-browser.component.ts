@@ -260,7 +260,7 @@ export class ArchiveBrowserComponent implements OnInit, OnChanges, OnDestroy {
   filterLessons(): void {
     const term = this.searchTerm.toLowerCase().trim();
 
-    // נוספו לאחרונה — 2 שיעורים + 2 מכתבים אחרונים
+    // נוספו לאחרונה — 2 שיעורים קודם, אחר כך 2 מכתבים
     if (this.selectedCategory === 'recent') {
       const recentLessons = [...this.allLessons]
         .sort((a, b) => (b.createdTime || '').localeCompare(a.createdTime || ''))
@@ -268,8 +268,7 @@ export class ArchiveBrowserComponent implements OnInit, OnChanges, OnDestroy {
       const recentLetters = [...this.allLetters]
         .sort((a, b) => (b.createdTime || '').localeCompare(a.createdTime || ''))
         .slice(0, 2);
-      this.filteredLessons = [...recentLessons, ...recentLetters]
-        .sort((a, b) => (b.createdTime || '').localeCompare(a.createdTime || ''));
+      this.filteredLessons = [...recentLessons, ...recentLetters]; // שיעורים קודם, מכתבים אחר כך
       return;
     }
 
