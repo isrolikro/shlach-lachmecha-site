@@ -3,6 +3,11 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, expand, reduce, EMPTY, map } from 'rxjs';
 import { Lesson } from '../models/lesson.model';
 
+export interface DriveFolder {
+  id: string;
+  name: string;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -55,8 +60,23 @@ export class DriveDataService {
     );
   }
 
-  getLetters(): Observable<Lesson[]> {
-    const query = `'${this.LETTERS_FOLDER_ID}' in parents and trashed = false`;
+  /** מחזיר את רשימת תת-התיקיות בתיקיית מכתבים */
+  getLetterSubfolders(): Observable<DriveFolder[]> {
+    const query = `'${this.LETTERS_FOLDER_ID}' in parents and mimeType = 'application/vnd.google-apps.folder' and trashed = false`;
+    const fields = 'files(id,name)';
+    const url = `${this.API_URL}?q=${encodeURIComponent(query)}&key=${this.API_KEY}&fields=${encodeURIComponent(fields)}`;
+    return this.http.get<any>(url).pipe(
+      map(res =>
+        ((res.files || []) as DriveFolder[]).sort((a, b) =>
+          a.name.localeCompare(b.name, 'he')
+        )
+      )
+    );
+  }
+
+  /** מחזיר את הקבצים (PDF/תמונה) מתוך תיקייה ספציפית */
+  getFilesInFolder(folderId: string): Observable<Lesson[]> {
+    const query = `'${folderId}' in parents and trashed = false`;
     const fields = 'nextPageToken,files(id,name,webContentLink,description)';
     const baseUrl = `${this.API_URL}?q=${encodeURIComponent(query)}&key=${this.API_KEY}&fields=${encodeURIComponent(fields)}&pageSize=1000`;
 

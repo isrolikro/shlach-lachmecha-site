@@ -1,14 +1,12 @@
 import { Component, OnInit, OnDestroy, OnChanges, Input, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DriveDataService } from '../../services/drive-data.service';
+import { DriveDataService, DriveFolder } from '../../services/drive-data.service';
 import { LanguageService } from '../../services/language.service';
 import { Lesson } from '../../models/lesson.model';
-import { Subscription } from 'rxjs';
+import { Subscription, forkJoin, of, switchMap, map } from 'rxjs';
 import { LessonCardComponent } from '../../components/lesson-card/lesson-card.component';
 
-// יצירת רשימה שטוחה אחת למיון - מחוץ למחלקה כדי למנוע שגיאות const
 const GLOBAL_ORDER = Object.values(DriveDataService.CATEGORIES_CONFIG).flat();
-const LETTER_SUBCATEGORIES = ['ברית מילה', 'ניחומים', 'ארגונים', 'קהילות', 'חגים', 'חנוכת הבית', 'מוסדות'];
 const HOLIDAY_SUBCATEGORIES = DriveDataService.CATEGORIES_CONFIG['חגים ומועדים'];
 
 @Component({
@@ -28,33 +26,37 @@ export class ArchiveBrowserComponent implements OnInit, OnChanges, OnDestroy {
   currentLang: 'he' | 'ru' = 'he';
   isLoading = true;
   expandedGroups = new Set<string>(['humash']);
+
+  /** שמות תת-התיקיות שנטענו מגוגל דרייב */
+  letterSubcategoryNames: string[] = [];
+
   private langSub!: Subscription;
 
   ui: any = {
-    he: { 
-      menuTitle: 'תפריט שיעורים', 
-      found: 'שיעורים נמצאו', 
+    he: {
+      menuTitle: 'תפריט שיעורים',
+      found: 'שיעורים נמצאו',
       empty: 'לא נמצאו שיעורים בקטגוריה זו',
-      searchResults: 'תוצאות חיפוש' 
+      searchResults: 'תוצאות חיפוש'
     },
-    ru: { 
-      menuTitle: 'Меню архива', 
-      found: 'уроков найдено', 
+    ru: {
+      menuTitle: 'Меню архива',
+      found: 'уроков найдено',
       empty: 'Уроки не найдены',
       searchResults: 'Результаты поиска'
     }
   };
 
-  menuGroups = [
+  menuGroups: any[] = [
     {
       id: 'humash',
       label: { he: 'חומשים', ru: 'Пятикнижие' },
       items: [
         { id: 'בראשית', label: { he: 'בראשית', ru: 'Берешит' } },
-        { id: 'שמות', label: { he: 'שמות', ru: 'Шмот' } },
-        { id: 'ויקרא', label: { he: 'ויקרא', ru: 'Ваикра' } },
-        { id: 'במדבר', label: { he: 'במדבר', ru: 'Бемидбар' } },
-        { id: 'דברים', label: { he: 'דברים', ru: 'Дварим' } }
+        { id: 'שמות',   label: { he: 'שמות',   ru: 'Шмот' } },
+        { id: 'ויקרא', label: { he: 'ויקרא',   ru: 'Ваикра' } },
+        { id: 'במדבר', label: { he: 'במדבר',   ru: 'Бемидбар' } },
+        { id: 'דברים', label: { he: 'דברים',   ru: 'Дварим' } }
       ]
     },
     {
@@ -67,8 +69,8 @@ export class ArchiveBrowserComponent implements OnInit, OnChanges, OnDestroy {
         { id: 'סוכות',          label: { he: 'סוכות',         ru: 'Суккот' } },
         { id: 'שמיני עצרת',     label: { he: 'שמיני עצרת',    ru: 'Шмини Ацерет' } },
         { id: 'שמחת תורה',      label: { he: 'שמחת תורה',     ru: 'Симхат Тора' } },
-        { id: 'יט כסלו',        label: { he: 'יט כסלו',       ru: 'Йуд-тет Кислев' } },
-        { id: 'לג בעומר',       label: { he: 'לג בעומר',      ru: 'Лаг баОмер' } },
+        { id: 'י"ט כסלו',       label: { he: 'י"ט כסלו',      ru: 'Йуд-тет Кислев' } },
+        { id: 'ל"ג בעומר',      label: { he: 'ל"ג בעומר',     ru: 'Лаг баОмер' } },
         { id: 'חנוכה',          label: { he: 'חנוכה',         ru: 'Ханука' } },
         { id: 'פורים',          label: { he: 'פורים',         ru: 'Пурим' } },
         { id: 'פסח',            label: { he: 'פסח',           ru: 'Песах' } },
@@ -83,14 +85,8 @@ export class ArchiveBrowserComponent implements OnInit, OnChanges, OnDestroy {
       id: 'letters',
       label: { he: 'מכתבים', ru: 'Письма' },
       items: [
-        { id: 'מכתבים-הכל',   label: { he: 'הכל',          ru: 'Все' } },
-        { id: 'ברית מילה',    label: { he: 'ברית מילה',    ru: 'Брит Мила' } },
-        { id: 'ניחומים',      label: { he: 'ניחומים',      ru: 'Соболезнования' } },
-        { id: 'ארגונים',      label: { he: 'ארגונים',      ru: 'Организации' } },
-        { id: 'קהילות',       label: { he: 'קהילות',       ru: 'Общины' } },
-        { id: 'חגים',         label: { he: 'חגים',         ru: 'Праздники' } },
-        { id: 'חנוכת הבית',   label: { he: 'חנוכת הבית',   ru: 'Новоселье' } },
-        { id: 'מוסדות',       label: { he: 'מוסדות',       ru: 'Учреждения' } },
+        { id: 'מכתבים-הכל', label: { he: 'הכל', ru: 'Все' } }
+        // פריטים נוספים ייטענו דינמית מגוגל דרייב
       ]
     }
   ];
@@ -106,6 +102,7 @@ export class ArchiveBrowserComponent implements OnInit, OnChanges, OnDestroy {
       if (!this.selectedCategory) this.selectedCategory = 'בראשית';
     });
 
+    // טעינת שיעורים
     this.driveService.getLessons().subscribe({
       next: (lessons) => {
         this.allLessons = lessons;
@@ -118,8 +115,37 @@ export class ArchiveBrowserComponent implements OnInit, OnChanges, OnDestroy {
       }
     });
 
-    this.driveService.getLetters().subscribe({
-      next: (letters) => { this.allLetters = letters; this.filterLessons(); },
+    // טעינת מכתבים — דינמית מתת-תיקיות
+    this.driveService.getLetterSubfolders().pipe(
+      switchMap((folders: DriveFolder[]) => {
+        this.letterSubcategoryNames = folders.map(f => f.name);
+
+        // בניית תפריט המכתבים דינמית
+        this.menuGroups[2].items = [
+          { id: 'מכתבים-הכל', label: { he: 'הכל', ru: 'Все' } },
+          ...folders.map(f => ({ id: f.name, label: { he: f.name, ru: f.name } }))
+        ];
+
+        if (folders.length === 0) return of([] as Lesson[]);
+
+        // טעינה מקבילה של כל תת-התיקיות
+        return forkJoin(
+          folders.map(folder =>
+            this.driveService.getFilesInFolder(folder.id).pipe(
+              map((files: Lesson[]) =>
+                files.map(f => ({ ...f, letterCategory: folder.name }))
+              )
+            )
+          )
+        ).pipe(
+          map((results: Lesson[][]) => results.flat())
+        );
+      })
+    ).subscribe({
+      next: (letters: Lesson[]) => {
+        this.allLetters = letters;
+        this.filterLessons();
+      },
       error: (err) => console.error('שגיאה בטעינת מכתבים:', err)
     });
   }
@@ -127,15 +153,21 @@ export class ArchiveBrowserComponent implements OnInit, OnChanges, OnDestroy {
   getCategoryLabel(id: string | null): string {
     if (!id) return '';
     for (const group of this.menuGroups) {
-      const item = group.items.find(i => i.id === id);
+      const item = group.items.find((i: any) => i.id === id);
       if (item) return item.label[this.currentLang];
     }
     return id;
   }
 
   get activeMobileTopTab(): 'humash' | 'holidays' | 'letters' {
-    if (this.selectedCategory === 'חגים-הכל' || (this.selectedCategory && HOLIDAY_SUBCATEGORIES.includes(this.selectedCategory))) return 'holidays';
-    if (this.selectedCategory === 'מכתבים-הכל' || (this.selectedCategory && LETTER_SUBCATEGORIES.includes(this.selectedCategory))) return 'letters';
+    if (
+      this.selectedCategory === 'חגים-הכל' ||
+      (this.selectedCategory && HOLIDAY_SUBCATEGORIES.includes(this.selectedCategory))
+    ) return 'holidays';
+    if (
+      this.selectedCategory === 'מכתבים-הכל' ||
+      (this.selectedCategory && this.letterSubcategoryNames.includes(this.selectedCategory))
+    ) return 'letters';
     return 'humash';
   }
 
@@ -154,11 +186,17 @@ export class ArchiveBrowserComponent implements OnInit, OnChanges, OnDestroy {
         this.selectCategory('בראשית');
       }
     } else if (tab === 'holidays') {
-      if (this.selectedCategory !== 'חגים-הכל' && !HOLIDAY_SUBCATEGORIES.includes(this.selectedCategory || '')) {
+      if (
+        this.selectedCategory !== 'חגים-הכל' &&
+        !HOLIDAY_SUBCATEGORIES.includes(this.selectedCategory || '')
+      ) {
         this.selectCategory('חגים-הכל');
       }
     } else {
-      if (this.selectedCategory !== 'מכתבים-הכל' && !LETTER_SUBCATEGORIES.includes(this.selectedCategory || '')) {
+      if (
+        this.selectedCategory !== 'מכתבים-הכל' &&
+        !this.letterSubcategoryNames.includes(this.selectedCategory || '')
+      ) {
         this.selectCategory('מכתבים-הכל');
       }
     }
@@ -172,35 +210,47 @@ export class ArchiveBrowserComponent implements OnInit, OnChanges, OnDestroy {
   filterLessons(): void {
     const term = this.searchTerm.toLowerCase().trim();
 
+    // הכל במועדים
     if (this.selectedCategory === 'חגים-הכל') {
       this.filteredLessons = this.allLessons.filter(l =>
-        l.humash === 'חגים ומועדים' && (!term || l.title.toLowerCase().includes(term) || l.description.toLowerCase().includes(term))
-      );
-      return;
-    }
-
-    if (this.selectedCategory && HOLIDAY_SUBCATEGORIES.includes(this.selectedCategory)) {
-      this.filteredLessons = this.allLessons.filter(l =>
-        l.humash === 'חגים ומועדים' && l.parasha === this.selectedCategory &&
+        l.humash === 'חגים ומועדים' &&
         (!term || l.title.toLowerCase().includes(term) || l.description.toLowerCase().includes(term))
       );
       return;
     }
 
-    if (this.selectedCategory === 'מכתבים-הכל' || (this.selectedCategory && LETTER_SUBCATEGORIES.includes(this.selectedCategory))) {
-      const subCat = this.selectedCategory === 'מכתבים-הכל' ? null : this.selectedCategory!.toLowerCase();
+    // מועד ספציפי
+    if (this.selectedCategory && HOLIDAY_SUBCATEGORIES.includes(this.selectedCategory)) {
+      this.filteredLessons = this.allLessons.filter(l =>
+        l.humash === 'חגים ומועדים' &&
+        l.parasha === this.selectedCategory &&
+        (!term || l.title.toLowerCase().includes(term) || l.description.toLowerCase().includes(term))
+      );
+      return;
+    }
+
+    // מכתבים — הכל או קטגוריה ספציפית
+    if (
+      this.selectedCategory === 'מכתבים-הכל' ||
+      (this.selectedCategory && this.letterSubcategoryNames.includes(this.selectedCategory))
+    ) {
       this.filteredLessons = this.allLetters.filter(l => {
-        const title = l.title.toLowerCase();
-        const desc  = l.description.toLowerCase();
-        const matchesSub = !subCat || title.includes(subCat) || desc.includes(subCat);
-        return matchesSub && (!term || title.includes(term) || desc.includes(term));
+        const matchesSub =
+          this.selectedCategory === 'מכתבים-הכל' ||
+          l.letterCategory === this.selectedCategory;
+        return matchesSub &&
+          (!term || l.title.toLowerCase().includes(term) || l.description.toLowerCase().includes(term));
       });
       return;
     }
 
+    // חומשים
     let results = this.allLessons.filter(lesson => {
       if (term) {
-        return lesson.title.toLowerCase().includes(term) || lesson.description.toLowerCase().includes(term);
+        return (
+          lesson.title.toLowerCase().includes(term) ||
+          lesson.description.toLowerCase().includes(term)
+        );
       }
       return !this.selectedCategory || lesson.humash === this.selectedCategory;
     });
