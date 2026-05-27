@@ -116,13 +116,15 @@ export class ArchiveBrowserComponent implements OnInit, OnChanges, OnDestroy {
 
         // הסרת חומשים ריקים מהתפריט
         const humashimWithLessons = new Set(lessons.map(l => l.humash));
-        this.menuGroups[0].items = this.menuGroups[0].items.filter(
+        const humashGroup = this.menuGroups.find((g: any) => g.id === 'humash');
+        if (humashGroup) humashGroup.items = humashGroup.items.filter(
           (item: any) => humashimWithLessons.has(item.id)
         );
 
         // הסרת מועדים ריקים מהתפריט
         const parashotWithLessons = new Set(lessons.map(l => l.parasha));
-        this.menuGroups[1].items = this.menuGroups[1].items.filter(
+        const holidaysGroup = this.menuGroups.find((g: any) => g.id === 'holidays');
+        if (holidaysGroup) holidaysGroup.items = holidaysGroup.items.filter(
           (item: any) => item.id === 'חגים-הכל' || parashotWithLessons.has(item.id)
         );
 
@@ -140,7 +142,8 @@ export class ArchiveBrowserComponent implements OnInit, OnChanges, OnDestroy {
         this.letterSubcategoryNames = folders.map(f => f.name);
 
         // בניית תפריט המכתבים דינמית
-        this.menuGroups[2].items = [
+        const lettersGroup = this.menuGroups.find((g: any) => g.id === 'letters');
+        if (lettersGroup) lettersGroup.items = [
           { id: 'מכתבים-הכל', label: { he: 'הכל', ru: 'Все' } },
           ...folders.map(f => ({ id: f.name, label: { he: f.name, ru: f.name } }))
         ];
@@ -166,7 +169,8 @@ export class ArchiveBrowserComponent implements OnInit, OnChanges, OnDestroy {
 
         // הסרת קטגוריות ריקות מהתפריט
         const nonEmpty = new Set(letters.map(l => l.letterCategory));
-        this.menuGroups[2].items = this.menuGroups[2].items.filter(
+        const lettersGrp = this.menuGroups.find((g: any) => g.id === 'letters');
+        if (lettersGrp) lettersGrp.items = lettersGrp.items.filter(
           (item: any) => item.id === 'מכתבים-הכל' || nonEmpty.has(item.id)
         );
         this.letterSubcategoryNames = this.letterSubcategoryNames.filter(
