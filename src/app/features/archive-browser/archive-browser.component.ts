@@ -144,6 +144,16 @@ export class ArchiveBrowserComponent implements OnInit, OnChanges, OnDestroy {
     ).subscribe({
       next: (letters: Lesson[]) => {
         this.allLetters = letters;
+
+        // הסרת קטגוריות ריקות מהתפריט
+        const nonEmpty = new Set(letters.map(l => l.letterCategory));
+        this.menuGroups[2].items = this.menuGroups[2].items.filter(
+          (item: any) => item.id === 'מכתבים-הכל' || nonEmpty.has(item.id)
+        );
+        this.letterSubcategoryNames = this.letterSubcategoryNames.filter(
+          name => nonEmpty.has(name)
+        );
+
         this.filterLessons();
       },
       error: (err) => console.error('שגיאה בטעינת מכתבים:', err)
