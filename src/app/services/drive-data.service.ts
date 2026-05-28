@@ -24,6 +24,14 @@ export class DriveDataService {
 
   private readonly ALL_PARASHOT_ORDER = Object.values(DriveDataService.CATEGORIES_CONFIG).flat();
 
+  // כינויים לפרשות שנכתבות בכתיב חסר בשמות קבצים
+  private readonly PARASHA_ALIASES: Record<string, string> = {
+    'בחקתי':   'בחוקותי',
+    'בחוקתי':  'בחוקותי',
+    'בהעלתך':  'בהעלותך',
+    'אחרי':    'אחרי מות',
+  };
+
   private readonly API_KEY = 'AIzaSyA6nNLhbu6wAQbUVcsKON5YZLIpQTzMZvQ';
   private readonly FOLDER_ID = '182yS_949b2rbkUK9R1R0eV4j_TElVxps';
   private readonly LETTERS_FOLDER_ID = '1e7GjRKyLNYca-Qha13oBYYwrLxja2-ya';
@@ -125,9 +133,16 @@ export class DriveDataService {
 
     // מחפשים איזה שם פרשה מהרשימה "מוכל" בתוך שם הקובץ, עם נרמול גרשיים
     const normalize = (s: string) => s.replace(/["״]/g, '');
-    const foundParasha = this.ALL_PARASHOT_ORDER.find(p =>
+    // גם הכינויים משתתפים בחיפוש
+    const allSearchTerms = [
+      ...this.ALL_PARASHOT_ORDER,
+      ...Object.keys(this.PARASHA_ALIASES)
+    ];
+    const rawFound = allSearchTerms.find(p =>
       cleanName.includes(p) || normalize(cleanName).includes(normalize(p))
     ) || 'כללי';
+    // נרמול לשם הקנוני
+    const foundParasha = this.PARASHA_ALIASES[rawFound] ?? rawFound;
 
     // במידה ומדובר בדו-לשוני
     if (cleanName.includes('|')) {
