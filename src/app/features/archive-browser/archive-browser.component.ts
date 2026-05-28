@@ -206,6 +206,10 @@ export class ArchiveBrowserComponent implements OnInit, OnChanges, OnDestroy {
     return id;
   }
 
+  get humashGroup()   { return this.menuGroups.find((g: any) => g.id === 'humash'); }
+  get holidaysGroup() { return this.menuGroups.find((g: any) => g.id === 'holidays'); }
+  get lettersGroup()  { return this.menuGroups.find((g: any) => g.id === 'letters'); }
+
   get activeMobileTopTab(): 'humash' | 'holidays' | 'letters' | 'recent' {
     if (this.selectedCategory === 'recent') return 'recent';
     if (

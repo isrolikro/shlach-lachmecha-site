@@ -65,7 +65,7 @@
         <div class="sub-tabs-wrapper">
           <button class="sub-arrow-btn sub-arrow-right" (click)="scrollSubTabs(humashScroll, 'right')" aria-label="הקודם">‹</button>
           <div class="mobile-sub-tabs" #humashScroll>
-            @for (item of menuGroups[0].items; track item.id) {
+            @for (item of humashGroup?.items; track item.id) {
               <button [class.active]="selectedCategory === item.id"
                       (click)="selectCategory(item.id)">
                 {{ item.label[currentLang] }}
@@ -80,7 +80,7 @@
         <div class="sub-tabs-wrapper">
           <button class="sub-arrow-btn sub-arrow-right" (click)="scrollSubTabs(holidaysScroll, 'right')" aria-label="הקודם">‹</button>
           <div class="mobile-sub-tabs" #holidaysScroll>
-            @for (item of menuGroups[1].items; track item.id) {
+            @for (item of holidaysGroup?.items; track item.id) {
               <button [class.active]="selectedCategory === item.id"
                       (click)="selectCategory(item.id)">
                 {{ item.label[currentLang] }}
@@ -95,7 +95,7 @@
         <div class="sub-tabs-wrapper">
           <button class="sub-arrow-btn sub-arrow-right" (click)="scrollSubTabs(lettersScroll, 'right')" aria-label="הקודם">‹</button>
           <div class="mobile-sub-tabs" #lettersScroll>
-            @for (item of menuGroups[2].items; track item.id) {
+            @for (item of lettersGroup?.items; track item.id) {
               <button [class.active]="selectedCategory === item.id"
                       (click)="selectCategory(item.id)">
                 {{ item.label[currentLang] }}
