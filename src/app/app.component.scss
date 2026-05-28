@@ -138,5 +138,10 @@
   .main-footer {
     padding: 28px 16px 22px;
     font-size: 0.83rem;
+
+    .footer-info {
+      .sep { display: none; }
+      span, a { display: block; margin: 2px 0; }
+    }
   }
 }
