@@ -131,6 +131,12 @@ export class DriveDataService {
     const yearMatch = rawName.match(/תשפ[א-ת_]+/) || rawName.match(/\d{4}/);
     const year = yearMatch ? yearMatch[0].replace('_', '"') : 'תשפ"ו';
 
+    // הסרת השנה מהכותרת
+    const titleClean = cleanName
+      .replace(/\s*תשפ[א-ת"״_]+/g, '')
+      .replace(/\s*\d{4}/g, '')
+      .trim();
+
     // מחפשים איזה שם פרשה מהרשימה "מוכל" בתוך שם הקובץ, עם נרמול גרשיים
     const normalize = (s: string) => s.replace(/["״]/g, '');
     // גם הכינויים משתתפים בחיפוש
@@ -148,9 +154,9 @@ export class DriveDataService {
     if (cleanName.includes('|')) {
       return {
         id: file.id,
-        title: cleanName,
+        title: titleClean,
         humash: this.getCategory(foundParasha),
-        parasha: foundParasha, // עכשיו זה יהיה "בראשית" נקי!
+        parasha: foundParasha,
         year: year,
         language: 'HE',
         pdfUrl: file.webContentLink,
@@ -161,7 +167,7 @@ export class DriveDataService {
     // פורמט ישן
     return {
       id: file.id,
-      title: cleanName,
+      title: titleClean,
       humash: this.getCategory(foundParasha),
       parasha: foundParasha,
       year: year,
