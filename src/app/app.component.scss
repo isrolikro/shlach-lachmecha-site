@@ -126,6 +126,12 @@
     margin: 4px 0;
     &:first-child { color: rgba(255,255,255,0.85); font-weight: 600; }
   }
+
+  a {
+    color: #d4af37;
+    text-decoration: none;
+    &:hover { text-decoration: underline; }
+  }
 }
 
 @media (max-width: 768px) {
