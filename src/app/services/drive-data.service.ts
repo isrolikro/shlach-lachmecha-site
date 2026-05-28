@@ -128,12 +128,12 @@ export class DriveDataService {
     const cleanName = fileNameWithoutExt.replace(/^\d+\s+/, '');
 
     // חילוץ שנה
-    const yearMatch = rawName.match(/תשפ[א-ת_]+/) || rawName.match(/\d{4}/);
-    const year = yearMatch ? yearMatch[0].replace('_', '"') : 'תשפ"ו';
+    const yearMatch = rawName.match(/תשפ[א-ת"״'_]+/) || rawName.match(/\d{4}/);
+    const year = yearMatch ? yearMatch[0].replace(/[_']/g, '"') : 'תשפ"ו';
 
     // הסרת השנה מהכותרת
     const titleClean = cleanName
-      .replace(/\s*תשפ[א-ת"״_]+/g, '')
+      .replace(/\s*תשפ[א-ת"״'_]+/g, '')
       .replace(/\s*\d{4}/g, '')
       .trim();
 
