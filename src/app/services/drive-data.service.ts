@@ -41,7 +41,7 @@ export class DriveDataService {
 
   getLessons(): Observable<Lesson[]> {
     const query = `'${this.FOLDER_ID}' in parents and trashed = false`;
-    const fields = 'nextPageToken,files(id,name,webContentLink,description,createdTime)';
+    const fields = 'nextPageToken,files(id,name,webContentLink,description,createdTime,modifiedTime)';
     const baseUrl = `${this.API_URL}?q=${encodeURIComponent(query)}&key=${this.API_KEY}&fields=${encodeURIComponent(fields)}&pageSize=1000`;
 
     return this.http.get<any>(baseUrl).pipe(
@@ -85,7 +85,7 @@ export class DriveDataService {
   /** מחזיר את הקבצים (PDF/תמונה) מתוך תיקייה ספציפית */
   getFilesInFolder(folderId: string): Observable<Lesson[]> {
     const query = `'${folderId}' in parents and trashed = false`;
-    const fields = 'nextPageToken,files(id,name,webContentLink,description,createdTime)';
+    const fields = 'nextPageToken,files(id,name,webContentLink,description,createdTime,modifiedTime)';
     const baseUrl = `${this.API_URL}?q=${encodeURIComponent(query)}&key=${this.API_KEY}&fields=${encodeURIComponent(fields)}&pageSize=1000`;
 
     return this.http.get<any>(baseUrl).pipe(
@@ -118,7 +118,7 @@ export class DriveDataService {
       language: 'HE',
       pdfUrl: file.webContentLink,
       description: file.description || '',
-      createdTime: file.createdTime || '',
+      createdTime: file.modifiedTime || file.createdTime || '',
     };
   }
 
@@ -152,6 +152,8 @@ export class DriveDataService {
     // נרמול לשם הקנוני
     const foundParasha = this.PARASHA_ALIASES[rawFound] ?? rawFound;
 
+    const recentTime = file.modifiedTime || file.createdTime || '';
+
     // במידה ומדובר בדו-לשוני
     if (cleanName.includes('|')) {
       return {
@@ -163,6 +165,7 @@ export class DriveDataService {
         language: 'HE',
         pdfUrl: file.webContentLink,
         description: file.description || '',
+        createdTime: recentTime,
       };
     }
 
@@ -176,7 +179,7 @@ export class DriveDataService {
       language: rawName.includes('RU') ? 'RU' : 'HE',
       pdfUrl: file.webContentLink,
       description: file.description || '',
-      createdTime: file.createdTime || '',
+      createdTime: recentTime,
     };
   }
 
