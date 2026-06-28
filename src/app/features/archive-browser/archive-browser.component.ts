@@ -118,8 +118,8 @@ export class ArchiveBrowserComponent implements OnInit, OnChanges, OnDestroy {
     'במדבר':  'שיעורי תורה - ספר במדבר | במדבר, נשא, בהעלותך, שלח, קורח, חקת, בלק, פנחס, מטות, מסעי',
     'דברים':  'שיעורי תורה - ספר דברים | דברים, ואתחנן, עקב, ראה, שופטים, כי תצא, כי תבוא, נצבים, וילך, האזינו, וזאת הברכה',
     'חגים-הכל': 'שיעורי תורה - חגים ומועדים | ראש השנה, יום כיפור, סוכות, חנוכה, פורים, פסח, שבועות',
-    'recent':     'שלח לחמך | שיעורים שנוספו לאחרונה',
-    'מכתבים-הכל': 'שלח לחמך | מכתבים',
+    'recent':     'שיעורים שנוספו לאחרונה',
+    'מכתבים-הכל': 'מכתבים',
   };
 
   constructor(
@@ -279,8 +279,8 @@ export class ArchiveBrowserComponent implements OnInit, OnChanges, OnDestroy {
   private updatePageMeta(categoryId: string): void {
     const seoTitle = this.SEO_TITLES[categoryId];
     const fullTitle = seoTitle
-      ? `שלח לחמך | ${seoTitle}`
-      : `שלח לחמך | ${this.getCategoryLabel(categoryId)} - שיעורי תורה`;
+      ? `שלח לחמך | שיעורי הגר"ב לאזאר - ${seoTitle}`
+      : `שלח לחמך | שיעורי הגר"ב לאזאר - ${this.getCategoryLabel(categoryId)}`;
     this.titleService.setTitle(fullTitle);
 
     const desc = seoTitle
