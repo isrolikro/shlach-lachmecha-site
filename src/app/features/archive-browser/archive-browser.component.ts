@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy, OnChanges, Input, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Title, Meta } from '@angular/platform-browser';
 import { DriveDataService, DriveFolder } from '../../services/drive-data.service';
 import { LanguageService } from '../../services/language.service';
 import { Lesson } from '../../models/lesson.model';
@@ -110,9 +111,22 @@ export class ArchiveBrowserComponent implements OnInit, OnChanges, OnDestroy {
     }
   ];
 
+  private readonly SEO_TITLES: Record<string, string> = {
+    'בראשית': 'שיעורי תורה - ספר בראשית | בראשית, נח, לך לך, וירא, חיי שרה, תולדות, ויצא, וישלח, וישב, מקץ, ויגש, ויחי',
+    'שמות':   'שיעורי תורה - ספר שמות | שמות, וארא, בא, בשלח, יתרו, משפטים, תרומה, תצוה, כי תשא, ויקהל, פקודי',
+    'ויקרא':  'שיעורי תורה - ספר ויקרא | ויקרא, צו, שמיני, תזריע, מצורע, אחרי מות, קדושים, אמור, בהר, בחוקותי',
+    'במדבר':  'שיעורי תורה - ספר במדבר | במדבר, נשא, בהעלותך, שלח, קורח, חקת, בלק, פנחס, מטות, מסעי',
+    'דברים':  'שיעורי תורה - ספר דברים | דברים, ואתחנן, עקב, ראה, שופטים, כי תצא, כי תבוא, נצבים, וילך, האזינו, וזאת הברכה',
+    'חגים-הכל': 'שיעורי תורה - חגים ומועדים | ראש השנה, יום כיפור, סוכות, חנוכה, פורים, פסח, שבועות',
+    'recent':     'שלח לחמך | שיעורים שנוספו לאחרונה',
+    'מכתבים-הכל': 'שלח לחמך | מכתבים',
+  };
+
   constructor(
     private driveService: DriveDataService,
-    private langService: LanguageService
+    private langService: LanguageService,
+    private titleService: Title,
+    private metaService: Meta
   ) {}
 
   ngOnInit(): void {
@@ -258,7 +272,23 @@ export class ArchiveBrowserComponent implements OnInit, OnChanges, OnDestroy {
 
   selectCategory(categoryId: string): void {
     this.selectedCategory = categoryId;
+    this.updatePageMeta(categoryId);
     this.filterLessons();
+  }
+
+  private updatePageMeta(categoryId: string): void {
+    const seoTitle = this.SEO_TITLES[categoryId];
+    const fullTitle = seoTitle
+      ? `שלח לחמך | ${seoTitle}`
+      : `שלח לחמך | ${this.getCategoryLabel(categoryId)} - שיעורי תורה`;
+    this.titleService.setTitle(fullTitle);
+
+    const desc = seoTitle
+      ? `${fullTitle} - שיעורי תורה של הרב לאזאר`
+      : 'ארכיון שיעורי תורה של הרב לאזאר - פרשת השבוע, חגים ומועדים';
+    this.metaService.updateTag({ name: 'description', content: desc });
+    this.metaService.updateTag({ property: 'og:title', content: fullTitle });
+    this.metaService.updateTag({ property: 'og:description', content: desc });
   }
 
   filterLessons(): void {
