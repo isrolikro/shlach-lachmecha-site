@@ -152,11 +152,11 @@ export class DriveDataService {
 
     // מחפשים איזה שם פרשה מהרשימה "מוכל" בתוך שם הקובץ, עם נרמול גרשיים
     const normalize = (s: string) => s.replace(/["״]/g, '');
-    // גם הכינויים משתתפים בחיפוש
+    // גם הכינויים משתתפים בחיפוש — ממוינים מהארוך לקצר כדי שמונחים ספציפיים יינסו לפני קצרים
     const allSearchTerms = [
+      ...Object.keys(this.PARASHA_ALIASES),
       ...this.ALL_PARASHOT_ORDER,
-      ...Object.keys(this.PARASHA_ALIASES)
-    ];
+    ].sort((a, b) => b.length - a.length);
     const rawFound = allSearchTerms.find(p =>
       cleanName.includes(p) || normalize(cleanName).includes(normalize(p))
     ) || 'כללי';
