@@ -195,8 +195,8 @@ export class DriveDataService {
   }
 
   private getCategory(subject: string): string {
-    const category = Object.keys(DriveDataService.CATEGORIES_CONFIG).find(cat => 
-      DriveDataService.CATEGORIES_CONFIG[cat].some(s => subject.includes(s))
+    const category = Object.keys(DriveDataService.CATEGORIES_CONFIG).find(cat =>
+      DriveDataService.CATEGORIES_CONFIG[cat].includes(subject)
     );
     return category || (subject.includes('חג') || subject.includes('מועד') ? 'חגים ומועדים' : 'אחר');
   }
